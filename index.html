@@ -9,6 +9,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-serif;overflow:hidden}
+/* Mobile: allow touch scroll */
 :root{
   --bg:#0a0a0f;--bg2:#0f0f1a;--bg3:#141424;
   --sur:#1a1a2e;--sur2:#1f1f35;
@@ -43,7 +44,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 /* ─── LOGIN ─── */
 #login{position:fixed;inset:0;z-index:999;background:var(--bg);display:none;align-items:center;justify-content:center}
 #login.v{display:flex}
-.lb{background:var(--bg2);border:1px solid var(--pb);border-radius:var(--r);padding:40px 36px;width:100%;max-width:380px;box-shadow:var(--sh),0 0 60px rgba(124,58,237,.1);display:flex;flex-direction:column;gap:22px}
+.lb{background:var(--bg2);border:1px solid var(--pb);border-radius:var(--r);padding:40px 36px;width:calc(100% - 32px);max-width:380px;box-shadow:var(--sh),0 0 60px rgba(124,58,237,.1);display:flex;flex-direction:column;gap:22px}
 .ll{display:flex;align-items:center;gap:12px;justify-content:center}
 .ll-icon{width:42px;height:42px;background:var(--pg);border:1px solid var(--pb);border-radius:10px;display:flex;align-items:center;justify-content:center}
 .ll-txt{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--tx);letter-spacing:-.02em}
@@ -314,6 +315,164 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:38px 20px;text-align:center;gap:8px;color:var(--txm)}
 .empty .ico{font-size:2.1rem;opacity:.5}
 .empty p{font-size:.79rem}
+
+/* ════════════════════════════════════════
+   RESPONSIVE — TABLET & MOBILE
+════════════════════════════════════════ */
+
+/* ── Touch tap highlight fix ── */
+*{-webkit-tap-highlight-color:transparent}
+input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on focus */
+.btn,.tb-btn,.l-btn,.tool-btn,.col-btn,.bic{touch-action:manipulation}
+
+/* ── Bottom nav bar (mobile only) ── */
+#mob-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(10,10,15,.97);backdrop-filter:blur(16px);
+  border-top:1px solid var(--pb);
+  height:60px;
+  flex-direction:row;align-items:stretch;
+  padding:0 4px;
+  safe-area-inset-bottom: env(safe-area-inset-bottom);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.mob-nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;background:none;border:none;color:var(--txm);cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:.52rem;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;padding:4px 2px;transition:color .2s;border-radius:var(--rs);
+}
+.mob-nav-btn svg{width:20px;height:20px}
+.mob-nav-btn.act{color:var(--ac)}
+.mob-nav-btn.act svg{filter:drop-shadow(0 0 6px rgba(192,132,252,.5))}
+
+/* ── Sidebar overlay on mobile ── */
+#sb-overlay{
+  display:none;position:fixed;inset:0;z-index:149;
+  background:rgba(5,5,10,.7);backdrop-filter:blur(4px);
+}
+#sb-overlay.show{display:block}
+
+/* ── Tablet (≤900px) ── */
+@media(max-width:900px){
+  .t-lbl .sub{display:none}
+  #sb-conn{display:none}
+  .tb-btn span{display:none}
+  .tb-btn{padding:6px 8px}
+  .t-user{padding:5px 9px}
+}
+
+/* ── Mobile (≤640px) ── */
+@media(max-width:640px){
+  /* App uses flex column, bottom nav replaces sidebar */
+  #app{height:calc(100vh - 60px);height:calc(100dvh - 60px)}
+  #mob-nav{display:flex}
+
+  /* Topbar compact */
+  .topbar{height:52px;padding:0 12px;gap:8px}
+  .t-lbl .yr{font-size:.95rem}
+  .t-lbl .sub,.t-acts,.t-user,.t-clk{display:none}
+  /* Show only logo + user dot + logout on mobile topbar */
+  .mob-user-pill{
+    display:flex!important;align-items:center;gap:6px;
+    padding:4px 10px;background:var(--sur);border:1px solid var(--pb);
+    border-radius:20px;font-size:.7rem;color:var(--txd);font-weight:600;margin-left:auto;
+  }
+  .mob-udot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+  .mob-logout{
+    background:none;border:none;color:var(--txm);cursor:pointer;
+    padding:4px 8px;font-family:'Syne',sans-serif;font-size:.65rem;font-weight:700;
+    display:flex;align-items:center;gap:4px;
+  }
+  .mob-logout svg{width:12px;height:12px}
+
+  /* Sidebar: slide-over drawer on mobile */
+  .sidebar{
+    position:fixed;top:52px;left:0;bottom:60px;
+    z-index:150;transform:translateX(-100%);
+    transition:transform .3s ease;
+    width:240px!important;flex-basis:240px!important;
+    box-shadow:4px 0 24px rgba(0,0,0,.5);
+  }
+  .sidebar.mob-open{transform:translateX(0)}
+  /* Hide collapse btn inside drawer on mobile */
+  .sidebar .col-btn{display:none}
+
+  /* Content full width */
+  .layout{flex-direction:column}
+  .content{width:100%;min-width:0}
+
+  /* Home padding */
+  #home{padding:16px 14px 10px;gap:16px}
+  .h-greet{font-size:1.5rem}
+  .h-stats{gap:8px}
+  .sc{padding:10px 12px;min-width:72px}
+  .sv{font-size:1.3rem}
+  .dg{grid-template-columns:repeat(2,1fr);gap:8px}
+  .dcard{padding:13px 11px}
+  .dc-icon{font-size:1.3rem}
+  .dc-name{font-size:.78rem}
+
+  /* Discipline topbar */
+  .dt-bar{padding:10px 14px 0}
+  .d-bc{margin-bottom:8px}
+  .d-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;gap:0;padding-bottom:1px}
+  .d-tabs::-webkit-scrollbar{display:none}
+  .tab-btn{padding:7px 10px;font-size:.68rem;white-space:nowrap}
+
+  /* Tab panels */
+  .tab-panel{padding:12px 14px;gap:10px}
+
+  /* Notes */
+  .n-hbar{gap:6px}
+  .nt-bar{padding:5px 8px;gap:3px}
+  .tool-btn{width:30px;height:30px}
+  .n-area{min-height:140px;padding:11px 12px;font-size:.84rem}
+  .nc-head{padding:10px 12px}
+
+  /* Create note modal */
+  .cnbox{margin:0 12px;padding:22px 18px}
+
+  /* Files */
+  .up-zone{padding:20px 14px}
+  .fh{padding:8px 10px;gap:8px}
+  .fic-w{width:32px;height:32px;font-size:.9rem}
+  .fname{font-size:.75rem}
+  .finfo{font-size:.58rem}
+
+  /* Tasks */
+  .ti-row{flex-wrap:wrap}
+  .ti{width:100%;flex:none}
+  .ti-row .btn{width:100%}
+  .titem{padding:8px 10px;gap:7px}
+  .ttxt{font-size:.76rem}
+  .tdt{display:none}
+
+  /* Flashcards — 1 column */
+  .cadd{grid-template-columns:1fr;gap:8px}
+  .cadd .btn{width:100%}
+  .fc-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .fc{height:130px}
+
+  /* Toast */
+  .tw{bottom:72px;right:12px;left:12px;align-items:center}
+  .toast{font-size:.72rem;padding:8px 12px}
+
+  /* Footer hidden on mobile */
+  .foot{display:none}
+
+  /* Login */
+  .lb{margin:12px;padding:28px 20px}
+}
+
+/* ── Small phones (≤380px) ── */
+@media(max-width:380px){
+  .dg{grid-template-columns:1fr 1fr}
+  .fc-grid{grid-template-columns:1fr 1fr}
+  .dc-name{font-size:.72rem}
+}
+
 </style>
 </head>
 <body>
@@ -397,6 +556,14 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
       <span id="sb-conn-txt">offline</span>
     </div>
     <div class="t-clk" id="clock">--:--</div>
+    <!-- Mobile only: user pill + logout -->
+    <div class="mob-user-pill" style="display:none">
+      <div class="mob-udot"></div>
+      <span id="mob-uname">—</span>
+      <button class="mob-logout" onclick="doLogout()" title="Sair">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
   </header>
 
   <div class="layout">
@@ -517,6 +684,37 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
     <div class="fsep"></div>
     <span class="ft">Desenvolvido por <span>ze</span></span>
   </footer>
+
+  <!-- Sidebar overlay (mobile tap-outside to close) -->
+  <div id="sb-overlay" onclick="closeMobSidebar()"></div>
+
+  <!-- Bottom navigation (mobile only) -->
+  <nav id="mob-nav">
+    <button class="mob-nav-btn" id="mn-home" onclick="mobNavHome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Início
+    </button>
+    <button class="mob-nav-btn" id="mn-discs" onclick="openMobSidebar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Disciplinas
+    </button>
+    <button class="mob-nav-btn" id="mn-notes" onclick="mobSwitchTab('notes')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Notas
+    </button>
+    <button class="mob-nav-btn" id="mn-files" onclick="mobSwitchTab('files')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Ficheiros
+    </button>
+    <button class="mob-nav-btn" id="mn-tasks" onclick="mobSwitchTab('tasks')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tarefas
+    </button>
+    <button class="mob-nav-btn" id="mn-cards" onclick="mobSwitchTab('cards')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      Cards
+    </button>
+  </nav>
 </div>
 
 <!-- Create Note Modal -->
@@ -583,6 +781,7 @@ function doLogin() {
     document.getElementById('t-uname').textContent = u;
     document.getElementById('login').classList.remove('v');
     document.getElementById('app').classList.add('v');
+    updateMobUsername(u);
     init();
   } else {
     err.classList.add('show');
@@ -605,7 +804,7 @@ const DISCS = [
   {id:'pt', name:'Português',        icon:'📖'},
   {id:'mt', name:'Matemática',       icon:'📐'},
   {id:'en', name:'Inglês',           icon:'🇬🇧'},
-  {id:'fr', name:'Francês',          icon:'🇫🇷'},
+  {id:'es', name:'Espanhol',         icon:'🇪🇸'},
   {id:'hi', name:'História',         icon:'🏛️'},
   {id:'ge', name:'Geografia',        icon:'🌍'},
   {id:'cn', name:'Ciências Naturais',icon:'🔬'},
@@ -614,8 +813,6 @@ const DISCS = [
   {id:'tc', name:'TIC / Tecnologia', icon:'💻'},
   {id:'cd', name:'Cidadania e DN',   icon:'🤝'},
   {id:'ar', name:'Educação Visual',  icon:'🎨'},
-  {id:'mu', name:'Educação Musical', icon:'🎵'},
-  {id:'em', name:'EMRC / Moral',     icon:'✝️'},
 ];
 
 /* ══ SUPABASE CLIENT ══ */
@@ -704,6 +901,7 @@ window.addEventListener('load',()=>{
       CU = su;
       document.getElementById('t-uname').textContent = su;
       document.getElementById('app').classList.add('v');
+      updateMobUsername(su);
       init();
     } else {
       document.getElementById('login').classList.add('v');
@@ -727,6 +925,7 @@ async function init(){
   buildHome();
   updStats();
   startClock();
+  setMobNavAct('mn-home');
 }
 
 /* Supabase Realtime — refresh current disc when another user saves */
@@ -1248,6 +1447,73 @@ function toast(msg,type=''){
   w.appendChild(el);
   setTimeout(()=>el.remove(),3000);
 }
+
+/* ══ MOBILE HELPERS ══ */
+function isMobile(){ return window.innerWidth <= 640; }
+
+function openMobSidebar(){
+  document.getElementById('sidebar').classList.add('mob-open');
+  document.getElementById('sb-overlay').classList.add('show');
+  setMobNavAct('mn-discs');
+}
+function closeMobSidebar(){
+  document.getElementById('sidebar').classList.remove('mob-open');
+  document.getElementById('sb-overlay').classList.remove('show');
+}
+
+function mobNavHome(){
+  closeMobSidebar();
+  showHome();
+  setMobNavAct('mn-home');
+}
+
+function mobSwitchTab(tab){
+  closeMobSidebar();
+  if(!CD){
+    toast('Seleciona uma disciplina primeiro','');
+    openMobSidebar(); return;
+  }
+  switchTab(tab, document.querySelector('[data-tab="'+tab+'"]'));
+  setMobNavAct('mn-'+tab);
+}
+
+function setMobNavAct(id){
+  document.querySelectorAll('.mob-nav-btn').forEach(b=>b.classList.remove('act'));
+  const el=document.getElementById(id);
+  if(el) el.classList.add('act');
+}
+
+function updateMobUsername(u){
+  const el=document.getElementById('mob-uname');
+  if(el) el.textContent=u;
+}
+
+// Override showHome to also update mob nav
+const _origShowHome = showHome;
+window.showHome = function(){
+  _origShowHome();
+  setMobNavAct('mn-home');
+  closeMobSidebar();
+};
+
+// Override openDisc to close sidebar drawer on mobile
+const _origOpenDisc = openDisc;
+window.openDisc = function(id){
+  _origOpenDisc(id);
+  if(isMobile()){
+    closeMobSidebar();
+    setMobNavAct('mn-notes');
+  }
+};
+
+// Handle resize: if going from mobile to desktop, reset sidebar state
+window.addEventListener('resize', ()=>{
+  if(!isMobile()){
+    document.getElementById('sidebar').classList.remove('mob-open');
+    document.getElementById('sb-overlay').classList.remove('show');
+  }
+});
+
 </script>
 </body>
 </html>
