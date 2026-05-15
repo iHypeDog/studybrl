@@ -1066,35 +1066,46 @@ async function loadNotes(){
 
 // renderNotesPreserve: re-renders but keeps expanded/content state for open cards
 function renderNotesPreserve(notes, forceExpand=[]){
-  // Save which cards are expanded and their current content
-  const expanded={};
-  const currentContent={};
+  // Snapshot expanded cards: store BOTH index→content AND noteId→content
+  // so we can match by ID after re-render (indices shift when note is prepended)
+  const expandedByIdx={};
+  const contentById={};   // key: note.id (stable), value: current HTML in editor
   document.querySelectorAll('.ncard').forEach((card,i)=>{
     if(card.classList.contains('exp')){
-      expanded[i]=true;
+      expandedByIdx[i]=true;
       const area=document.getElementById('na-'+i);
-      if(area) currentContent[i]=area.innerHTML;
-    }
-  });
-  renderNotes(notes);
-  // Restore expanded state and content (avoid overwriting what user is typing)
-  Object.keys(expanded).forEach(i=>{
-    const idx=parseInt(i);
-    const card=document.getElementById('nc-'+idx);
-    if(card){
-      card.classList.add('exp');
-      // If user had content in the editor, restore it (realtime shouldn't overwrite active editing)
-      const area=document.getElementById('na-'+idx);
-      if(area && currentContent[idx]!==undefined){
-        // Only restore if the note id matches (same note still at same position)
-        area.innerHTML=currentContent[idx];
+      if(area){
+        // Store content keyed by the note's stable ID
+        const noteId=card.dataset.noteId;
+        if(noteId) contentById[noteId]=area.innerHTML;
       }
     }
   });
-  // Force expand specific indices (e.g. newly created note)
+  renderNotes(notes);
+  // Restore expanded + content by matching stable note IDs
+  notes.forEach((note,idx)=>{
+    const card=document.getElementById('nc-'+idx);
+    if(!card) return;
+    const wasExpanded=Object.keys(expandedByIdx).some(oldIdx=>{
+      // find if this note was expanded at any old position
+      return card.dataset.noteId && contentById[card.dataset.noteId]!==undefined;
+    });
+    const savedContent=card.dataset.noteId ? contentById[card.dataset.noteId] : undefined;
+    if(savedContent!==undefined){
+      card.classList.add('exp');
+      const area=document.getElementById('na-'+idx);
+      if(area && savedContent) area.innerHTML=savedContent;
+    }
+  });
+  // Force expand specific indices (newly created notes — always start empty)
   forceExpand.forEach(idx=>{
     const card=document.getElementById('nc-'+idx);
-    if(card) card.classList.add('exp');
+    if(card){
+      card.classList.add('exp');
+      // Explicitly clear editor for new notes
+      const area=document.getElementById('na-'+idx);
+      if(area) area.innerHTML='';
+    }
   });
 }
 
@@ -1105,7 +1116,7 @@ function renderNotes(notes){
     return;
   }
   list.innerHTML=notes.map((n,i)=>`
-    <div class="ncard fi2" id="nc-${i}">
+    <div class="ncard fi2" id="nc-${i}" data-note-id="${n.id||i}">
       <div class="nc-head" onclick="toggleNC(${i})">
         <div class="nc-ico">📄</div>
         <div class="nc-meta">
@@ -1154,10 +1165,11 @@ function toggleNC(i){
 function fn(i,cmd,val){ document.execCommand(cmd,false,val||null); document.getElementById('na-'+i).focus(); }
 function hn(i){ document.execCommand('hiliteColor',false,'rgba(168,85,247,.3)'); document.getElementById('na-'+i).focus(); }
 function onNI(i){
+  // Mark as unsaved — NO autosave (would move cursor in contenteditable)
   const d=document.getElementById('d-'+i), t=document.getElementById('dt-'+i);
   if(d){d.className='sv-dot uns';t.textContent='Não guardado';}
+  // Clear any previous timer (no-op now, kept for safety)
   clearTimeout(svt[i]);
-  svt[i]=setTimeout(()=>saveNote(i),2000);
 }
 async function saveNote(i){
   const notes=lg(CD,'notes',[]);
@@ -1212,7 +1224,10 @@ async function confirmCN(){
   renderNotesPreserve(notes, [0]); // expand the new note (index 0)
   updStats(); buildSB();
   toast('Nota criada!','ok');
-  setTimeout(()=>{ const a=document.getElementById('na-0'); if(a) a.focus(); },80);
+  setTimeout(()=>{
+    const a=document.getElementById('na-0');
+    if(a){ a.innerHTML=''; a.focus(); }  // always start fresh
+  },80);
 }
 async function renNote(i){
   const notes=lg(CD,'notes',[]);
@@ -1236,9 +1251,12 @@ async function delNote(i){
 }
 
 /* ══ FILES ══ */
+let _filesCache = []; // in-memory cache for current disc files (includes data)
+
 async function loadFiles(){
   const files=await sg(CD,'files',[]);
   ls(CD,'files',files);
+  _filesCache = files; // keep in memory for preview access
   renderFiles(files);
 }
 
@@ -1246,8 +1264,9 @@ function renderFiles(files){
   const list=document.getElementById('file-list');
   if(!files.length){ list.innerHTML=`<div class="empty"><div class="ico">📭</div><p>Nenhum ficheiro carregado ainda</p></div>`; return; }
   list.innerHTML=files.map((f,i)=>{
-    const cp=canPrev(f.type);
-    const isImg=f.type&&f.type.startsWith('image/');
+    const type=guessType(f);
+    const cp=canPrev(type)||canPrevByName(f.name);
+    const isImg=type.startsWith('image/');
     return `<div class="fitem fi2" id="fi-${i}">
       <div class="fh">
         <div class="fic-w">${fIcon(f.type)}</div>
@@ -1286,8 +1305,32 @@ function renderFiles(files){
   }).join('');
 }
 
-function canPrev(t){ if(!t) return false; return t.startsWith('image/')||t.includes('pdf')||t.startsWith('text/')||t.startsWith('audio/')||t.startsWith('video/')||t.includes('mp4')||t.includes('mp3')||t.includes('ogg')||t.includes('webm'); }
-function fIcon(t){
+function canPrev(t){ 
+  if(!t) return false;
+  return t.startsWith('image/')||t.includes('pdf')||t.startsWith('text/')||
+         t.startsWith('audio/')||t.startsWith('video/')||
+         t.includes('mp4')||t.includes('mp3')||t.includes('ogg')||t.includes('webm');
+}
+function canPrevByName(name){
+  if(!name) return false;
+  const ext=(name.split('.').pop()||'').toLowerCase();
+  return ['jpg','jpeg','png','gif','webp','svg','pdf','mp3','mp4','ogg','webm',
+          'wav','txt','md','csv','html','htm','js','json','xml'].includes(ext);
+}
+function guessType(f){
+  // Try to fix missing MIME type using file extension
+  if(f.type) return f.type;
+  const ext=(f.name||'').split('.').pop().toLowerCase();
+  const map={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',gif:'image/gif',
+             webp:'image/webp',svg:'image/svg+xml',pdf:'application/pdf',
+             mp3:'audio/mpeg',wav:'audio/wav',ogg:'audio/ogg',
+             mp4:'video/mp4',webm:'video/webm',
+             txt:'text/plain',md:'text/plain',csv:'text/csv',
+             html:'text/html',json:'application/json'};
+  return map[ext]||'';
+}
+function fIcon(t,name){
+  t=t||(name?guessType({type:'',name}):'')||'';
   if(!t) return '📄';
   if(t.startsWith('image/')) return '🖼️';
   if(t.includes('pdf')) return '📕';
@@ -1306,21 +1349,27 @@ function togPrev(i){
   const btn=document.getElementById('pb-'+i);
   const area=document.getElementById('pa-'+i);
   const inner=document.getElementById('pi-'+i);
+  if(!btn||!area||!inner) return;
   const op=area.classList.toggle('op');
   btn.classList.toggle('op',op);
-  // Update label text node
+  // Update button label
   const nodes=[...btn.childNodes].filter(n=>n.nodeType===3);
   if(nodes.length) nodes[0].textContent=' '+(op?'Fechar prévia':'Ver prévia');
-  if(op && !inner.dataset.loaded){
-    inner.dataset.loaded='1';
-    const files=lg(CD,'files',[]);
-    buildPrev(inner,files[i],i);
+  if(op){
+    if(!inner.dataset.loaded){
+      inner.dataset.loaded='1';
+      // Use in-memory cache (has data field); fallback to lg()
+      const f=(_filesCache&&_filesCache[i]) || lg(CD,'files',[])[i];
+      if(!f){ inner.innerHTML='<p style="padding:12px;color:var(--txm)">Ficheiro não encontrado.</p>'; return; }
+      if(!f.data){ inner.innerHTML='<p style="padding:12px;color:var(--txm)">Dados do ficheiro indisponíveis. Faz novo upload.</p>'; return; }
+      buildPrev(inner,f,i);
+    }
   }
 }
 
 function buildPrev(inner,f,i){
   inner.innerHTML='';
-  const t=f.type||'';
+  const t=guessType(f);
   if(t.startsWith('image/')){
     const w=document.createElement('div'); w.className='pimg-w'; w.id='pw-'+i;
     const img=document.createElement('img'); img.src=f.data; img.className='pimg'; img.id='pimg-'+i; img.draggable=false;
@@ -1378,7 +1427,11 @@ function renFile(i){
   inp.focus(); inp.select();
 }
 
-function triggerUp(){ document.getElementById('finput').click(); }
+function triggerUp(){
+  const inp=document.getElementById('finput');
+  inp.value=''; // reset so same file can be re-uploaded
+  inp.click();
+}
 function onDO(e){ e.preventDefault(); document.getElementById('upzone').classList.add('dov'); }
 function onDL(){ document.getElementById('upzone').classList.remove('dov'); }
 function onDrp(e){ e.preventDefault(); document.getElementById('upzone').classList.remove('dov'); handleFiles(e.dataTransfer.files); }
@@ -1398,6 +1451,7 @@ function handleFiles(fl){
 }
 async function finFiles(existing,newF){
   const all=[...existing,...newF];
+  _filesCache = all; // keep in-memory cache up to date
   await ss(CD,'files',all);
   renderFiles(all); updStats(); buildSB();
   toast(newF.length+' ficheiro(s) enviado(s)','ok');
