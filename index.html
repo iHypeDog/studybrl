@@ -6,11 +6,7 @@
 <title>Studyblr</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* ══════════════════════════════════════════
-   RESET & BASE
-══════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-serif;overflow:hidden}
 :root{
@@ -30,9 +26,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--purd);border-radius:4px}
 
-/* ══════════════════════════════════════════
-   LOADER
-══════════════════════════════════════════ */
+/* ─── LOADER ─── */
 #loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .6s,visibility .6s}
 #loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .ld-logo{display:flex;align-items:center;gap:14px}
@@ -46,9 +40,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .ld-sub{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--txm);letter-spacing:.15em;text-transform:uppercase;animation:pu 1.5s ease infinite}
 @keyframes pu{0%,100%{opacity:.4}50%{opacity:1}}
 
-/* ══════════════════════════════════════════
-   LOGIN
-══════════════════════════════════════════ */
+/* ─── LOGIN ─── */
 #login{position:fixed;inset:0;z-index:999;background:var(--bg);display:none;align-items:center;justify-content:center}
 #login.v{display:flex}
 .lb{background:var(--bg2);border:1px solid var(--pb);border-radius:var(--r);padding:40px 36px;width:100%;max-width:380px;box-shadow:var(--sh),0 0 60px rgba(124,58,237,.1);display:flex;flex-direction:column;gap:22px}
@@ -65,20 +57,15 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .l-inp::placeholder{color:var(--txm)}
 .l-btn{padding:12px;background:linear-gradient(135deg,var(--pur),var(--purl));color:#fff;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.04em;box-shadow:0 2px 14px rgba(124,58,237,.4)}
 .l-btn:hover{box-shadow:0 4px 22px rgba(124,58,237,.6);transform:translateY(-1px)}
-.l-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .l-err{font-size:.72rem;color:var(--err);text-align:center;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:var(--rs);padding:8px;display:none}
 .l-err.show{display:block}
 .l-foot{font-size:.57rem;color:var(--txm);text-align:center;font-family:'JetBrains Mono',monospace}
 
-/* ══════════════════════════════════════════
-   APP SHELL
-══════════════════════════════════════════ */
+/* ─── APP ─── */
 #app{display:none;flex-direction:column;height:100vh;opacity:0;transition:opacity .5s}
 #app.v{display:flex;opacity:1}
 
-/* ══════════════════════════════════════════
-   TOPBAR
-══════════════════════════════════════════ */
+/* ─── TOPBAR ─── */
 .topbar{height:58px;background:rgba(10,10,15,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--pb);display:flex;align-items:center;padding:0 18px;gap:12px;flex-shrink:0;z-index:100;position:relative}
 .t-logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0}
 .t-mark{width:34px;height:34px;background:var(--pg);border:1px solid var(--pb);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0}
@@ -91,23 +78,29 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .t-sep{flex:1}
 .t-user{display:flex;align-items:center;gap:7px;padding:5px 12px;background:var(--sur);border:1px solid var(--pb);border-radius:20px;font-size:.72rem;color:var(--txd);font-weight:600}
 .t-udot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
-.t-udot.off{background:var(--err)}
 .t-acts{display:flex;align-items:center;gap:6px}
 .tb-btn{background:var(--sur);border:1px solid var(--pb);color:var(--txd);border-radius:var(--rs);padding:6px 11px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
 .tb-btn:hover{background:var(--sur2);color:var(--ac);border-color:rgba(168,85,247,.5);box-shadow:var(--ps)}
 .tb-btn.dng:hover{color:var(--err);border-color:rgba(244,63,94,.4);box-shadow:none}
-.tb-btn svg{width:13px;height:13px}
+.tb-btn svg,.tb-btn svgx{width:13px;height:13px}
 .t-clk{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--txm);padding-left:12px;border-left:1px solid var(--pb);flex-shrink:0}
+/* Supabase connection badge */
+#sb-conn{display:flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sur);border:1px solid var(--pb);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--txm);flex-shrink:0;transition:all .3s}
+#sb-conn.live{border-color:rgba(34,211,238,.35);color:var(--ok)}
+#sb-conn.off{border-color:rgba(245,158,11,.35);color:var(--warn)}
+#sb-conn-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pdot 2s ease infinite}
 
-/* ══════════════════════════════════════════
-   LAYOUT
-══════════════════════════════════════════ */
+/* ─── LAYOUT ─── */
 .layout{display:flex;flex:1;overflow:hidden;min-height:0}
 
-/* ══════════════════════════════════════════
-   SIDEBAR
-══════════════════════════════════════════ */
-.sidebar{width:var(--sw);flex:0 0 var(--sw);background:var(--bg2);border-right:1px solid var(--pb);display:flex;flex-direction:column;overflow:hidden;transition:width .3s ease,flex-basis .3s ease}
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:var(--sw);
+  flex:0 0 var(--sw);
+  background:var(--bg2);border-right:1px solid var(--pb);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .3s ease,flex-basis .3s ease;
+}
 .sidebar.col{width:58px;flex-basis:58px}
 .sb-head{padding:14px 12px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;overflow:hidden}
 .sb-title{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--txm);white-space:nowrap;overflow:hidden;transition:opacity .2s}
@@ -129,14 +122,10 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .di.act .di-name{color:var(--ac)}
 .di-meta{font-size:.6rem;color:var(--txm);margin-top:1px;white-space:nowrap}
 
-/* ══════════════════════════════════════════
-   CONTENT
-══════════════════════════════════════════ */
+/* ─── CONTENT ─── */
 .content{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
-/* ══════════════════════════════════════════
-   HOME
-══════════════════════════════════════════ */
+/* ─── HOME ─── */
 #home{flex:1;overflow-y:auto;padding:26px 26px 14px;display:flex;flex-direction:column;gap:22px}
 .h-welcome{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
 .h-greet{font-family:'DM Serif Display',serif;font-size:1.85rem;color:var(--tx);line-height:1.15;letter-spacing:-.02em}
@@ -158,9 +147,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .dc-count{font-size:.67rem;color:var(--txm);margin-top:auto;display:flex;align-items:center;gap:5px}
 .cdot{width:5px;height:5px;border-radius:50%;background:var(--pur)}
 
-/* ══════════════════════════════════════════
-   DISC SCREEN
-══════════════════════════════════════════ */
+/* ─── DISC SCREEN ─── */
 #disc{flex:1;display:none;flex-direction:column;overflow:hidden;min-height:0}
 #disc.v{display:flex}
 .dt-bar{padding:13px 20px 0;border-bottom:1px solid var(--pb);background:var(--bg2);flex-shrink:0}
@@ -176,9 +163,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .tab-panel{display:none;flex-direction:column;height:100%;overflow-y:auto;padding:16px 20px;gap:13px}
 .tab-panel.act{display:flex}
 
-/* ══════════════════════════════════════════
-   BUTTONS
-══════════════════════════════════════════ */
+/* ─── BUTTONS ─── */
 .btn{padding:8px 15px;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:.73rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;letter-spacing:.03em;white-space:nowrap;line-height:1}
 .btn svg{width:13px;height:13px;flex-shrink:0}
 .bp{background:linear-gradient(135deg,var(--pur),var(--purl));color:#fff;border:none;box-shadow:0 2px 12px rgba(124,58,237,.4)}
@@ -192,9 +177,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .bic:hover{color:var(--ac);border-color:rgba(168,85,247,.5)}
 .bic svg{width:14px;height:14px}
 
-/* ══════════════════════════════════════════
-   NOTES
-══════════════════════════════════════════ */
+/* ─── NOTES ─── */
 .n-hbar{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:8px}
 .n-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);border-radius:20px;padding:3px 10px;font-size:.6rem;font-weight:600;color:var(--ok);letter-spacing:.06em}
 .n-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pbd 1.8s ease infinite}
@@ -225,9 +208,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 @keyframes sdot{0%,100%{opacity:1}50%{opacity:.3}}
 .sv-dot.uns{background:var(--warn);animation:none}
 
-/* ══════════════════════════════════════════
-   CREATE NOTE MODAL
-══════════════════════════════════════════ */
+/* ─── CREATE NOTE MODAL ─── */
 .cnmod{position:fixed;inset:0;z-index:600;background:rgba(5,5,10,.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
 .cnmod.op{display:flex}
 .cnbox{background:var(--bg3);border:1px solid var(--pb);border-radius:var(--r);padding:28px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:16px;animation:mdi .2s ease}
@@ -239,9 +220,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .fi:focus{border-color:rgba(168,85,247,.6)}
 .fi::placeholder{color:var(--txm)}
 
-/* ══════════════════════════════════════════
-   FILES
-══════════════════════════════════════════ */
+/* ─── FILES ─── */
 .up-zone{border:2px dashed var(--pb);border-radius:var(--r);padding:26px;text-align:center;cursor:pointer;transition:all .25s;background:var(--pg);flex-shrink:0}
 .up-zone:hover,.up-zone.dov{border-color:rgba(168,85,247,.6);background:rgba(124,58,237,.12)}
 .up-zone input{display:none}
@@ -259,6 +238,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .fname-inp{flex:1;min-width:0;padding:2px 7px;background:var(--bg3);border:1px solid rgba(168,85,247,.5);border-radius:5px;color:var(--tx);font-family:'Syne',sans-serif;font-size:.8rem;outline:none}
 .finfo{font-size:.62rem;color:var(--txm);margin-top:2px;font-family:'JetBrains Mono',monospace}
 .facts{display:flex;gap:5px;align-items:center;flex-shrink:0}
+/* Preview button */
 .prv-btn{width:100%;padding:6px 12px;background:var(--bg2);border:none;border-top:1px solid var(--pb);color:var(--txm);font-family:'Syne',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;letter-spacing:.04em}
 .prv-btn:hover{color:var(--ac);background:var(--sur2)}
 .prv-btn svg{width:13px;height:13px;transition:transform .3s}
@@ -266,6 +246,7 @@ html,body{height:100%;background:#0a0a0f;color:#e8e0ff;font-family:'Syne',sans-s
 .prv-area{display:none;border-top:1px solid var(--pb);background:#050509}
 .prv-area.op{display:block}
 .prv-inner{position:relative;width:100%}
+/* previews */
 .pimg-w{overflow:auto;max-height:320px;display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none;padding:12px}
 .pimg-w:active{cursor:grabbing}
 .pimg{max-width:100%;height:auto;border-radius:6px;transition:transform .2s;transform-origin:center center}
@@ -275,12 +256,10 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
 .ptxt{max-height:260px;overflow:auto;padding:13px 15px;font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--tx);line-height:1.7;white-space:pre-wrap}
 .zbar{display:flex;align-items:center;gap:7px;padding:6px 12px;background:var(--bg2);border-top:1px solid var(--pb);justify-content:center}
 .zval{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--txd);min-width:38px;text-align:center}
-.zmb{width:26px;height:26px;background:var(--sur);border:1px solid var(--pb);border-radius:5px;color:var(--txm);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .15s;font-family:'Syne',sans-serif;font-weight:700}
+.zmb{width:26px;height:26px;background:var(--sur);border:1px solid var(--pb);border-radius:5px;color:var(--txm);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .15s;font-family:'Syne',sans-serif;font-weight:700;border:1px solid var(--pb)}
 .zmb:hover{color:var(--ac);border-color:rgba(168,85,247,.5)}
 
-/* ══════════════════════════════════════════
-   TASKS
-══════════════════════════════════════════ */
+/* ─── TASKS ─── */
 .ti-row{display:flex;gap:8px}
 .ti{flex:1;padding:9px 13px;background:var(--sur);border:1px solid var(--pb);border-radius:var(--rs);color:var(--tx);font-family:'Syne',sans-serif;font-size:.82rem;outline:none;transition:border-color .2s}
 .ti:focus{border-color:rgba(168,85,247,.5)}
@@ -297,9 +276,7 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
 .tdel{background:none;border:none;color:var(--txm);cursor:pointer;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:1rem;transition:all .15s}
 .tdel:hover{color:var(--err);background:rgba(244,63,94,.1)}
 
-/* ══════════════════════════════════════════
-   FLASHCARDS
-══════════════════════════════════════════ */
+/* ─── FLASHCARDS ─── */
 .cadd{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
 .cf{display:flex;flex-direction:column;gap:4px}
 .cf label{font-size:.62rem;color:var(--txm);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
@@ -318,26 +295,20 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
 .fc-del{position:absolute;top:7px;right:7px;width:21px;height:21px;background:rgba(244,63,94,.15);border:none;border-radius:4px;color:var(--err);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;opacity:0;transition:opacity .2s;z-index:10}
 .fc:hover .fc-del{opacity:1}
 
-/* ══════════════════════════════════════════
-   FOOTER
-══════════════════════════════════════════ */
+/* ─── FOOTER ─── */
 .foot{height:26px;background:var(--bg2);border-top:1px solid var(--pb);display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0;padding:0 18px}
 .ft{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--txm);letter-spacing:.06em}
 .ft span{color:var(--purl)}
 .fsep{width:1px;height:9px;background:var(--pb)}
 
-/* ══════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════ */
+/* ─── TOAST ─── */
 .tw{position:fixed;bottom:18px;right:18px;z-index:9000;display:flex;flex-direction:column;gap:7px;pointer-events:none}
 .toast{background:var(--sur);border:1px solid var(--pb);border-radius:var(--rs);padding:9px 14px;font-size:.76rem;color:var(--tx);box-shadow:var(--sh);animation:tin .25s ease;display:flex;align-items:center;gap:7px}
 .toast.ok{border-color:rgba(34,211,238,.4)}
 .toast.er{border-color:rgba(244,63,94,.4)}
 @keyframes tin{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
 
-/* ══════════════════════════════════════════
-   MISC
-══════════════════════════════════════════ */
+/* ─── MISC ─── */
 @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .fi2{animation:fi .3s ease forwards}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:38px 20px;text-align:center;gap:8px;color:var(--txm)}
@@ -347,7 +318,7 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
 </head>
 <body>
 
-<!-- ══ LOADER ══ -->
+<!-- LOADER -->
 <div id="loader">
   <div class="ld-logo">
     <div class="ld-glyph">
@@ -364,7 +335,7 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
   <div class="ld-sub">a carregar...</div>
 </div>
 
-<!-- ══ LOGIN ══ -->
+<!-- LOGIN -->
 <div id="login">
   <div class="lb">
     <div class="ll">
@@ -384,16 +355,17 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
       </div>
       <div class="l-field">
         <label>Password</label>
-        <input type="password" id="lp" class="l-inp" placeholder="••••••••" autocomplete="current-password">
+        <input type="password" id="lp" class="l-inp" placeholder="••••••••" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter')doLogin()">
       </div>
     </div>
     <div class="l-err" id="lerr">Nome ou password incorretos.</div>
-    <button class="l-btn" id="l-btn-submit" onclick="doLogin()">Entrar</button>
+    <button class="l-btn" onclick="doLogin()">Entrar</button>
     <div class="l-foot">© 2025 Studyblr · Desenvolvido por ze</div>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- APP -->
 <div id="app">
   <header class="topbar">
     <div class="t-logo" onclick="showHome()">
@@ -409,16 +381,20 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
       </div>
     </div>
     <div class="t-sep"></div>
-    <div class="t-user"><div class="t-udot" id="t-udot"></div><span id="t-uname">—</span></div>
+    <div class="t-user"><div class="t-udot"></div><span id="t-uname">—</span></div>
     <div class="t-acts">
       <button class="tb-btn" onclick="exportData()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Exportar
       </button>
       <button class="tb-btn dng" onclick="doLogout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Sair
       </button>
+    </div>
+    <div id="sb-conn" title="Estado da ligação Supabase">
+      <div id="sb-conn-dot"></div>
+      <span id="sb-conn-txt">offline</span>
     </div>
     <div class="t-clk" id="clock">--:--</div>
   </header>
@@ -471,7 +447,7 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
         </div>
 
         <div class="d-content">
-          <!-- NOTES TAB -->
+          <!-- NOTES -->
           <div class="tab-panel act" id="tab-notes">
             <div class="n-hbar">
               <div style="display:flex;align-items:center;gap:10px">
@@ -489,7 +465,7 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
             </div>
           </div>
 
-          <!-- FILES TAB -->
+          <!-- FILES -->
           <div class="tab-panel" id="tab-files">
             <div class="up-zone" id="upzone" onclick="triggerUp()"
                  ondragover="onDO(event)" ondragleave="onDL(event)" ondrop="onDrp(event)">
@@ -503,7 +479,7 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
             </div>
           </div>
 
-          <!-- TASKS TAB -->
+          <!-- TASKS -->
           <div class="tab-panel" id="tab-tasks">
             <div class="ti-row">
               <input type="text" class="ti" id="ti" placeholder="Nova tarefa... (Enter)" onkeydown="if(event.key==='Enter')addTask()">
@@ -517,7 +493,7 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
             </div>
           </div>
 
-          <!-- FLASHCARDS TAB -->
+          <!-- FLASHCARDS -->
           <div class="tab-panel" id="tab-cards">
             <div class="cadd">
               <div class="cf"><label>Pergunta / Frente</label><input type="text" id="cfr" placeholder="Ex: O que é a fotossíntese?"></div>
@@ -544,13 +520,12 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
 </div>
 
 <!-- Create Note Modal -->
-<div class="cnmod" id="cnmod" onclick="closeCNOverlay(event)">
-  <div class="cnbox">
+<div class="cnmod" id="cnmod" onclick="closeCN(event)">
+  <div class="cnbox" onclick="e=>e.stopPropagation()">
     <h3>✏️ Nova Nota</h3>
     <div class="ff">
       <label>Título da nota</label>
-      <input type="text" id="cn-title" class="fi" placeholder="Ex: Resumo do Capítulo 3"
-             onkeydown="if(event.key==='Enter')confirmCN()">
+      <input type="text" id="cn-title" class="fi" placeholder="Ex: Resumo do Capítulo 3" onkeydown="if(event.key==='Enter')confirmCN()">
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn bs" onclick="closeCN()">Cancelar</button>
@@ -567,489 +542,342 @@ audio.pmedia{height:52px;background:var(--bg3);padding:6px 10px}
 <script>
 'use strict';
 
-/* ══════════════════════════════════════════
-   CONFIG & CONSTANTS
-══════════════════════════════════════════ */
-const SUPABASE_URL      = 'https://tnszxpazooujobvcyjjd.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_uiSnzwJiMKD9_mDpff5sfQ_VE2b8A-x';
-const STORAGE_BUCKET    = 'studyblr-files';
-const SESSION_KEY       = 'sb_u';
-const MAX_FILE_MB       = 20;
+/*
+ ╔══════════════════════════════════════════════════════════╗
+ ║  STUDYBLR — SUPABASE SETUP (run once in Supabase SQL)   ║
+ ╠══════════════════════════════════════════════════════════╣
+ ║                                                          ║
+ ║  CREATE TABLE IF NOT EXISTS studyblr_data (             ║
+ ║    id   bigserial PRIMARY KEY,                          ║
+ ║    disc text NOT NULL,                                   ║
+ ║    type text NOT NULL,                                   ║
+ ║    value text NOT NULL DEFAULT '[]',                     ║
+ ║    updated_at timestamptz DEFAULT now(),                 ║
+ ║    UNIQUE(disc, type)                                    ║
+ ║  );                                                      ║
+ ║                                                          ║
+ ║  ALTER TABLE studyblr_data ENABLE ROW LEVEL SECURITY;   ║
+ ║                                                          ║
+ ║  -- Allow anyone with publishable key to read/write:    ║
+ ║  CREATE POLICY "public_rw" ON studyblr_data             ║
+ ║    FOR ALL USING (true) WITH CHECK (true);               ║
+ ║                                                          ║
+ ║  -- Enable realtime:                                     ║
+ ║  ALTER PUBLICATION supabase_realtime                     ║
+ ║    ADD TABLE studyblr_data;                              ║
+ ╚══════════════════════════════════════════════════════════╝
+*/
 
-/** Credenciais locais (fallback / demo) */
-const ACCS = {
-  ze:      'zedascouves',
-  matolde: 'matoldedosdinos',
-  kika:    'kika67pork'
-};
+/* ══ ACCOUNTS ══ */
+const ACCS = { ze:'zedascouves', matolde:'matoldedosdinos', kika:'kika67pork' };
+let CU = null; // current user
 
-/** Lista de disciplinas */
-const DISCS = [
-  { id:'pt', name:'Português',         icon:'📖' },
-  { id:'mt', name:'Matemática',        icon:'📐' },
-  { id:'en', name:'Inglês',            icon:'🇬🇧' },
-  { id:'fr', name:'Francês',           icon:'🇫🇷' },
-  { id:'hi', name:'História',          icon:'🏛️' },
-  { id:'ge', name:'Geografia',         icon:'🌍' },
-  { id:'cn', name:'Ciências Naturais', icon:'🔬' },
-  { id:'fq', name:'Físico-Química',    icon:'⚗️' },
-  { id:'ef', name:'Educação Física',   icon:'⚽' },
-  { id:'tc', name:'TIC / Tecnologia',  icon:'💻' },
-  { id:'cd', name:'Cidadania e DN',    icon:'🤝' },
-  { id:'ar', name:'Educação Visual',   icon:'🎨' },
-  { id:'mu', name:'Educação Musical',  icon:'🎵' },
-  { id:'em', name:'EMRC / Moral',      icon:'✝️' },
-];
-
-/* ══════════════════════════════════════════
-   SUPABASE CLIENT
-══════════════════════════════════════════ */
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-/* ══════════════════════════════════════════
-   GLOBAL STATE
-══════════════════════════════════════════ */
-let CU   = null;    // current user (string)
-let CD   = null;    // current disc id
-let ONLINE = true;  // connectivity flag
-let svt  = {};      // note autosave timers  { noteId: timeoutId }
-let fz   = {};      // file zoom levels      { index: scale }
-
-/* ══════════════════════════════════════════
-   UTILITIES
-══════════════════════════════════════════ */
-
-/** HTML-escape */
-function esc(s) {
-  return String(s || '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
-
-/** Toast notification. type: '' | 'ok' | 'er' */
-function toast(msg, type = '') {
-  const w  = document.getElementById('tw');
-  const el = document.createElement('div');
-  el.className  = 'toast ' + (type === 'ok' ? 'ok' : type === 'er' ? 'er' : '');
-  el.textContent = (type === 'ok' ? '✓ ' : type === 'er' ? '✕ ' : '· ') + msg;
-  w.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
-}
-
-/** Format bytes */
-function fmtB(b) {
-  if (b < 1024)      return b + ' B';
-  if (b < 1048576)   return (b / 1024).toFixed(1) + ' KB';
-  return (b / 1048576).toFixed(1) + ' MB';
-}
-
-/** Update online indicator */
-function setOnline(val) {
-  ONLINE = val;
-  const dot = document.getElementById('t-udot');
-  if (dot) dot.className = 't-udot' + (val ? '' : ' off');
-}
-
-/* ══════════════════════════════════════════
-   LOCAL STORAGE HELPERS (offline fallback)
-══════════════════════════════════════════ */
-
-function lsKey(discId, table) {
-  return `sb_${discId}_${table}`;
-}
-
-function lsGet(discId, table) {
-  try {
-    return JSON.parse(localStorage.getItem(lsKey(discId, table)) || '[]');
-  } catch { return []; }
-}
-
-function lsSet(discId, table, data) {
-  try {
-    localStorage.setItem(lsKey(discId, table), JSON.stringify(data));
-  } catch (e) {
-    console.warn('localStorage full:', e);
-  }
-}
-
-/* ══════════════════════════════════════════
-   CLOUD OPERATIONS — GENERIC CRUD
-   Each table has: disc_id (FK), created_at
-══════════════════════════════════════════ */
-
-/**
- * Load all rows for a disc from a given table.
- * Falls back to localStorage on error.
- */
-async function cloudLoad(discId, table) {
-  if (!discId) return [];
-  try {
-    const { data, error } = await db
-      .from(table)
-      .select('*')
-      .eq('disc_id', discId)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    setOnline(true);
-    lsSet(discId, table, data);   // keep local in sync
-    return data || [];
-  } catch (err) {
-    console.warn(`[cloud] load ${table}:`, err.message);
-    setOnline(false);
-    return lsGet(discId, table);
-  }
-}
-
-/**
- * Replace all rows for a disc in a given table.
- * Deletes existing rows then bulk-inserts new ones.
- * Falls back to localStorage only.
- */
-async function cloudSave(discId, table, items) {
-  if (!discId) return;
-  lsSet(discId, table, items);   // always write locally first
-
-  try {
-    await db.from(table).delete().eq('disc_id', discId);
-    if (items.length > 0) {
-      const payload = items.map(item => ({ ...item, disc_id: discId }));
-      const { error } = await db.from(table).insert(payload);
-      if (error) throw error;
-    }
-    setOnline(true);
-  } catch (err) {
-    console.warn(`[cloud] save ${table}:`, err.message);
-    setOnline(false);
-    toast('Guardado localmente (offline)', 'er');
-  }
-}
-
-/* ══════════════════════════════════════════
-   CLOUD OPERATIONS — NOTES
-══════════════════════════════════════════ */
-
-async function cloudLoadNotes(discId)           { return cloudLoad(discId, 'notes'); }
-async function cloudSaveNotes(discId, notes)    { return cloudSave(discId, 'notes', notes); }
-
-/* ══════════════════════════════════════════
-   CLOUD OPERATIONS — FILES (metadata only)
-   Actual binary stored in Supabase Storage
-══════════════════════════════════════════ */
-
-async function cloudLoadFiles(discId)           { return cloudLoad(discId, 'files'); }
-async function cloudSaveFiles(discId, files)    { return cloudSave(discId, 'files', files); }
-
-/**
- * Upload binary to Supabase Storage and insert a metadata row.
- * Returns the metadata object or null on failure.
- */
-async function cloudUploadFile(discId, file) {
-  const fileName = `${discId}/${Date.now()}-${file.name}`;
-  const { error: upErr } = await db.storage
-    .from(STORAGE_BUCKET)
-    .upload(fileName, file);
-
-  if (upErr) {
-    console.error('[cloud] upload:', upErr);
-    return null;
-  }
-
-  const { data: urlData } = db.storage
-    .from(STORAGE_BUCKET)
-    .getPublicUrl(fileName);
-
-  return {
-    id:      Date.now(),
-    disc_id: discId,
-    name:    file.name,
-    type:    file.type,
-    size:    fmtB(file.size),
-    date:    new Date().toLocaleDateString('pt-PT'),
-    by:      CU,
-    data:    urlData.publicUrl,
-    path:    fileName,
-  };
-}
-
-/**
- * Delete binary from Supabase Storage.
- */
-async function cloudDeleteFileStorage(path) {
-  const { error } = await db.storage.from(STORAGE_BUCKET).remove([path]);
-  if (error) console.warn('[cloud] delete storage:', error.message);
-}
-
-/* ══════════════════════════════════════════
-   CLOUD OPERATIONS — TASKS
-══════════════════════════════════════════ */
-
-async function cloudLoadTasks(discId)           { return cloudLoad(discId, 'tasks'); }
-async function cloudSaveTasks(discId, tasks)    { return cloudSave(discId, 'tasks', tasks); }
-
-/* ══════════════════════════════════════════
-   CLOUD OPERATIONS — FLASHCARDS
-══════════════════════════════════════════ */
-
-async function cloudLoadCards(discId)           { return cloudLoad(discId, 'cards'); }
-async function cloudSaveCards(discId, cards)    { return cloudSave(discId, 'cards', cards); }
-
-/* ══════════════════════════════════════════
-   AUTH
-══════════════════════════════════════════ */
-
-async function doLogin() {
-  const u   = (document.getElementById('lu').value || '').trim().toLowerCase();
-  const p   = document.getElementById('lp').value || '';
+function doLogin() {
+  const u = (document.getElementById('lu').value||'').trim().toLowerCase();
+  const p = document.getElementById('lp').value||'';
   const err = document.getElementById('lerr');
-  const btn = document.getElementById('l-btn-submit');
-
-  err.classList.remove('show');
-
-  if (!u || !p) {
-    err.textContent = 'Preenche o utilizador e password.';
-    err.classList.add('show');
-    return;
-  }
-
-  if (!ACCS[u] || ACCS[u] !== p) {
-    err.textContent = 'Nome ou password incorretos.';
+  if (ACCS[u] && ACCS[u]===p) {
+    err.classList.remove('show');
+    CU = u;
+    sessionStorage.setItem('sb_u', u);
+    document.getElementById('t-uname').textContent = u;
+    document.getElementById('login').classList.remove('v');
+    document.getElementById('app').classList.add('v');
+    init();
+  } else {
     err.classList.add('show');
     document.getElementById('lp').value = '';
-    return;
   }
-
-  // Successful login
-  btn.disabled = true;
-  btn.textContent = 'A entrar...';
-  CU = u;
-  sessionStorage.setItem(SESSION_KEY, u);
-
-  document.getElementById('t-uname').textContent = u;
-  document.getElementById('login').classList.remove('v');
-  document.getElementById('app').classList.add('v');
-
-  await init();
-  btn.disabled = false;
-  btn.textContent = 'Entrar';
 }
 
 function doLogout() {
   if (!confirm('Queres sair?')) return;
   CU = null;
-  CD = null;
-  sessionStorage.removeItem(SESSION_KEY);
-  clearInterval(window._clockInterval);
+  sessionStorage.removeItem('sb_u');
   document.getElementById('app').classList.remove('v');
   document.getElementById('login').classList.add('v');
   document.getElementById('lu').value = '';
   document.getElementById('lp').value = '';
 }
 
-/* ══════════════════════════════════════════
-   INIT
-══════════════════════════════════════════ */
+/* ══ DISCIPLINES ══ */
+const DISCS = [
+  {id:'pt', name:'Português',        icon:'📖'},
+  {id:'mt', name:'Matemática',       icon:'📐'},
+  {id:'en', name:'Inglês',           icon:'🇬🇧'},
+  {id:'fr', name:'Francês',          icon:'🇫🇷'},
+  {id:'hi', name:'História',         icon:'🏛️'},
+  {id:'ge', name:'Geografia',        icon:'🌍'},
+  {id:'cn', name:'Ciências Naturais',icon:'🔬'},
+  {id:'fq', name:'Físico-Química',   icon:'⚗️'},
+  {id:'ef', name:'Educação Física',  icon:'⚽'},
+  {id:'tc', name:'TIC / Tecnologia', icon:'💻'},
+  {id:'cd', name:'Cidadania e DN',   icon:'🤝'},
+  {id:'ar', name:'Educação Visual',  icon:'🎨'},
+  {id:'mu', name:'Educação Musical', icon:'🎵'},
+  {id:'em', name:'EMRC / Moral',     icon:'✝️'},
+];
 
-/**
- * Main entry point after login.
- */
-async function init() {
-  await buildSB();
-  await buildHome();
-  await updStats();
-  startClock();
+/* ══ SUPABASE CLIENT ══ */
+const SB_URL = 'https://tnszxpazooujobvcyjjd.supabase.co';
+const SB_KEY = 'sb_publishable_uiSnzwJiMKD9_mDpff5sfQ_VE2b8A-x';
+let SB = null;
+
+async function initSupabase(){
+  if(window.supabase){
+    SB = window.supabase.createClient(SB_URL, SB_KEY);
+    setConnBadge(true); return;
+  }
+  await new Promise((res)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+    s.onload=()=>{ SB=window.supabase.createClient(SB_URL,SB_KEY); setConnBadge(true); res(); };
+    s.onerror=()=>{ console.warn('[Supabase] CDN load failed, using localStorage'); setConnBadge(false); res(); };
+    document.head.appendChild(s);
+  });
 }
 
-/**
- * Boot sequence on page load.
- */
-document.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('lp').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
+function setConnBadge(online){
+  const el=document.getElementById('sb-conn');
+  const txt=document.getElementById('sb-conn-txt');
+  if(!el) return;
+  el.className = online ? 'live' : 'off';
+  if(txt) txt.textContent = online ? 'supabase' : 'offline';
+}
 
+/* ══ LOCAL CACHE ══ */
+function lk(d,t){ return `sb_${d}_${t}`; }
+function lg(d,t,df){
+  try{ const v=localStorage.getItem(lk(d,t)); return v?JSON.parse(v):df; }catch(e){return df;}
+}
+function ls(d,t,v){
+  try{ localStorage.setItem(lk(d,t),JSON.stringify(v)); }catch(e){}
+}
+
+/* ══ SHARED READ — Supabase with local cache fallback ══ */
+async function sg(disc, type, def){
+  const cached = lg(disc, type, null);
+  if(!SB) return cached ?? def;
   try {
-    const saved = sessionStorage.getItem(SESSION_KEY);
-    if (saved && ACCS[saved]) {
-      CU = saved;
-      document.getElementById('t-uname').textContent = saved;
+    const {data,error} = await SB
+      .from('studyblr_data')
+      .select('value')
+      .eq('disc', disc)
+      .eq('type', type)
+      .maybeSingle();
+    if(error) throw error;
+    if(!data) return cached ?? def;
+    const parsed = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+    ls(disc, type, parsed);
+    return parsed;
+  } catch(e){
+    console.warn('[SB read]', e.message);
+    return cached ?? def;
+  }
+}
+
+/* ══ SHARED WRITE — Supabase upsert + local cache ══ */
+async function ss(disc, type, value){
+  ls(disc, type, value);
+  if(!SB){ return; }
+  try {
+    const {error} = await SB
+      .from('studyblr_data')
+      .upsert({ disc, type, value: JSON.stringify(value) }, { onConflict: 'disc,type' });
+    if(error) throw error;
+  } catch(e){
+    console.warn('[SB write]', e.message);
+  }
+}
+
+/* ══ STATE ══ */
+let CD = null; // current disc
+let svt = {};  // save timers
+let fz  = {};  // file zoom levels
+
+/* ══ INIT ══ */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hidden');
+    const su = sessionStorage.getItem('sb_u');
+    if(su && ACCS[su]){
+      CU = su;
+      document.getElementById('t-uname').textContent = su;
       document.getElementById('app').classList.add('v');
-      await init();
+      init();
     } else {
       document.getElementById('login').classList.add('v');
     }
-  } catch (e) {
-    console.error('Boot error:', e);
-    document.getElementById('login').classList.add('v');
-  } finally {
-    document.getElementById('loader').classList.add('hidden');
-  }
+  },1800);
 });
 
-/* ══════════════════════════════════════════
-   CLOCK
-══════════════════════════════════════════ */
-
-function startClock() {
-  clearInterval(window._clockInterval);
-  const el = document.getElementById('clock');
-  const tick = () => {
-    el.textContent = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
-  };
-  tick();
-  window._clockInterval = setInterval(tick, 1000);
-}
-
-/* ══════════════════════════════════════════
-   SIDEBAR
-══════════════════════════════════════════ */
-
-async function buildSB() {
-  const dl = document.getElementById('dl');
-  dl.innerHTML = '';
-
-  for (const d of DISCS) {
-    const [notes, files, tasks, cards] = await Promise.all([
-      cloudLoadNotes(d.id),
-      cloudLoadFiles(d.id),
-      cloudLoadTasks(d.id),
-      cloudLoadCards(d.id),
-    ]);
-    const tot = notes.length + files.length + tasks.length + cards.length;
-
-    const el = document.createElement('div');
-    el.className = 'di' + (CD === d.id ? ' act' : '');
-    el.id = 'sb-' + d.id;
-    el.innerHTML = `
-      <button class="di-btn" onclick="openDisc('${d.id}')">
-        <div class="di-icon">${d.icon}</div>
-        <div class="di-info">
-          <div class="di-name">${d.name}</div>
-          <div class="di-meta">${tot > 0 ? tot + ' item' + (tot > 1 ? 's' : '') : 'Sem conteúdo'}</div>
-        </div>
-      </button>`;
-    dl.appendChild(el);
+async function init(){
+  // Init Supabase then load UI
+  showSbStatus('A ligar ao servidor...');
+  await initSupabase();
+  if(SB){
+    showSbStatus('Ligado ✓');
+    setTimeout(()=>hideSbStatus(),2500);
+    subscribeRealtime();
+  } else {
+    showSbStatus('Modo offline (localStorage)', true);
+    setTimeout(()=>hideSbStatus(),4000);
   }
+  buildSB();
+  buildHome();
+  updStats();
+  startClock();
 }
 
-function toggleSidebar() {
+/* Supabase Realtime — refresh current disc when another user saves */
+let realtimeSub = null;
+function subscribeRealtime(){
+  if(!SB) return;
+  if(realtimeSub){ SB.removeChannel(realtimeSub); }
+  realtimeSub = SB
+    .channel('studyblr_changes')
+    .on('postgres_changes', { event:'*', schema:'public', table:'studyblr_data' }, payload => {
+      const {disc, type} = payload.new || payload.old || {};
+      if(!disc || disc !== CD) return; // only refresh current disc
+      if(type === 'notes') loadNotes();
+      else if(type === 'files') loadFiles();
+      else if(type === 'tasks') loadTasks();
+      else if(type === 'cards') loadCards();
+      buildSB(); updStats();
+    })
+    .subscribe();
+}
+
+function showSbStatus(msg, warn=false){
+  let el = document.getElementById('sb-status');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'sb-status';
+    el.style.cssText = 'position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:999;padding:6px 16px;border-radius:20px;font-family:JetBrains Mono,monospace;font-size:.68rem;font-weight:600;letter-spacing:.06em;transition:opacity .4s;background:var(--sur);border:1px solid var(--pb);color:var(--txd);box-shadow:0 4px 16px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;';
+    document.body.appendChild(el);
+  }
+  el.style.borderColor = warn ? 'rgba(245,158,11,.4)' : 'rgba(34,211,238,.35)';
+  el.style.color = warn ? 'var(--warn)' : 'var(--ok)';
+  el.style.opacity = '1';
+  el.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:${warn?'var(--warn)':'var(--ok)'};display:inline-block;flex-shrink:0"></span>${msg}`;
+}
+function hideSbStatus(){
+  const el = document.getElementById('sb-status');
+  if(el){ el.style.opacity='0'; setTimeout(()=>el.remove(),400); }
+}
+
+function startClock(){
+  const el=document.getElementById('clock');
+  const t=()=>{ el.textContent=new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'}); };
+  t(); setInterval(t,1000);
+}
+
+/* ══ SIDEBAR ══ */
+function buildSB(){
+  const dl=document.getElementById('dl');
+  dl.innerHTML='';
+  DISCS.forEach(d=>{
+    const n=lg(d.id,'notes',[]).length, f=lg(d.id,'files',[]).length,
+          tk=lg(d.id,'tasks',[]).length, c=lg(d.id,'cards',[]).length;
+    const tot=n+f+tk+c;
+    const el=document.createElement('div');
+    el.className='di'+(CD===d.id?' act':'');
+    el.id='sb-'+d.id;
+    el.innerHTML=`<button class="di-btn" onclick="openDisc('${d.id}')">
+      <div class="di-icon">${d.icon}</div>
+      <div class="di-info">
+        <div class="di-name">${d.name}</div>
+        <div class="di-meta">${tot>0?tot+' item'+(tot>1?'s':''):'Sem conteúdo'}</div>
+      </div></button>`;
+    dl.appendChild(el);
+  });
+}
+
+function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('col');
 }
 
-/* ══════════════════════════════════════════
-   HOME SCREEN
-══════════════════════════════════════════ */
-
-async function buildHome() {
-  const dg = document.getElementById('dg');
-  dg.innerHTML = '';
-
-  // Use cached localStorage counts for speed; sidebar will refresh from cloud
-  for (const d of DISCS) {
-    const n  = lsGet(d.id, 'notes').length;
-    const f  = lsGet(d.id, 'files').length;
-    const tk = lsGet(d.id, 'tasks').length;
-    const c  = lsGet(d.id, 'cards').length;
-    const tot = n + f + tk + c;
-
-    const el = document.createElement('div');
-    el.className = 'dcard fi2';
-    el.onclick = () => openDisc(d.id);
-    el.innerHTML = `
-      <div class="dc-icon">${d.icon}</div>
-      <div class="dc-name">${d.name}</div>
-      <div class="dc-count">
-        <div class="cdot"></div>
-        ${tot > 0 ? tot + ' item' + (tot > 1 ? 's' : '') : 'Clica para começar'}
-      </div>`;
+/* ══ HOME ══ */
+function buildHome(){
+  const dg=document.getElementById('dg');
+  dg.innerHTML='';
+  DISCS.forEach(d=>{
+    const n=lg(d.id,'notes',[]).length, f=lg(d.id,'files',[]).length,
+          tk=lg(d.id,'tasks',[]).length, c=lg(d.id,'cards',[]).length;
+    const tot=n+f+tk+c;
+    const el=document.createElement('div');
+    el.className='dcard fi2';
+    el.onclick=()=>openDisc(d.id);
+    el.innerHTML=`<div class="dc-icon">${d.icon}</div><div class="dc-name">${d.name}</div>
+      <div class="dc-count"><div class="cdot"></div>${tot>0?tot+' item'+(tot>1?'s':''):'Clica para começar'}</div>`;
     dg.appendChild(el);
-  }
+  });
 }
 
-async function updStats() {
-  let n = 0, f = 0, t = 0, c = 0;
-  for (const d of DISCS) {
-    n += lsGet(d.id, 'notes').length;
-    f += lsGet(d.id, 'files').length;
-    t += lsGet(d.id, 'tasks').length;
-    c += lsGet(d.id, 'cards').length;
-  }
-  document.getElementById('sn').textContent  = n;
-  document.getElementById('sf').textContent  = f;
-  document.getElementById('st').textContent  = t;
-  document.getElementById('sc2').textContent = c;
+function updStats(){
+  let n=0,f=0,t=0,c=0;
+  DISCS.forEach(d=>{
+    n+=lg(d.id,'notes',[]).length; f+=lg(d.id,'files',[]).length;
+    t+=lg(d.id,'tasks',[]).length; c+=lg(d.id,'cards',[]).length;
+  });
+  document.getElementById('sn').textContent=n;
+  document.getElementById('sf').textContent=f;
+  document.getElementById('st').textContent=t;
+  document.getElementById('sc2').textContent=c;
 }
 
-async function showHome() {
-  document.getElementById('home').style.display = '';
+function showHome(){
+  document.getElementById('home').style.display='';
   document.getElementById('disc').classList.remove('v');
-  document.querySelectorAll('.di').forEach(e => e.classList.remove('act'));
-  CD = null;
-  await buildHome();
-  await updStats();
-  buildSB(); // refresh in background
+  document.querySelectorAll('.di').forEach(e=>e.classList.remove('act'));
+  CD=null; buildHome(); updStats(); buildSB();
 }
 
-/* ══════════════════════════════════════════
-   DISC NAVIGATION
-══════════════════════════════════════════ */
-
-async function openDisc(id) {
-  CD = id;
-  const d = DISCS.find(x => x.id === id);
-  document.getElementById('home').style.display = 'none';
+/* ══ OPEN DISC ══ */
+function openDisc(id){
+  CD=id;
+  const d=DISCS.find(x=>x.id===id);
+  document.getElementById('home').style.display='none';
   document.getElementById('disc').classList.add('v');
-  document.querySelectorAll('.di').forEach(e => e.classList.remove('act'));
-  const si = document.getElementById('sb-' + id);
-  if (si) si.classList.add('act');
-
-  const lbl = document.getElementById('n-dlbl');
-  if (lbl && d) lbl.textContent = d.name;
-
-  // Switch to notes tab
-  switchTab('notes', document.querySelector('[data-tab="notes"]'));
-
-  // Load all tabs in parallel
-  loadNotes();
-  loadFiles();
-  loadTasks();
-  loadCards();
+  document.querySelectorAll('.di').forEach(e=>e.classList.remove('act'));
+  const si=document.getElementById('sb-'+id);
+  if(si) si.classList.add('act');
+  const lbl=document.getElementById('n-dlbl');
+  if(lbl&&d) lbl.textContent=d.name;
+  switchTab('notes',document.querySelector('[data-tab="notes"]'));
+  loadNotes(); loadFiles(); loadTasks(); loadCards();
 }
 
-function switchTab(tab, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('act'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('act'));
-  document.getElementById('tab-' + tab).classList.add('act');
-  if (btn) btn.classList.add('act');
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('act'));
+  document.getElementById('tab-'+tab).classList.add('act');
+  if(btn) btn.classList.add('act');
 }
 
-/* ══════════════════════════════════════════
-   NOTES — UI
-══════════════════════════════════════════ */
-
-async function loadNotes() {
-  const sp = document.getElementById('nspin');
+/* ══ NOTES ══ */
+async function loadNotes(){
+  const sp=document.getElementById('nspin');
   sp.classList.add('on');
-  const notes = await cloudLoadNotes(CD);
+  const notes=await sg(CD,'notes',[]);
+  ls(CD,'notes',notes);
   sp.classList.remove('on');
   renderNotes(notes);
 }
 
-function renderNotes(notes) {
-  const list = document.getElementById('notes-list');
-  if (!notes.length) {
-    list.innerHTML = `<div class="empty"><div class="ico">📝</div><p>Nenhuma nota ainda. Cria a primeira!</p></div>`;
+function renderNotes(notes){
+  const list=document.getElementById('notes-list');
+  if(!notes.length){
+    list.innerHTML=`<div class="empty"><div class="ico">📝</div><p>Nenhuma nota ainda. Cria a primeira!</p></div>`;
     return;
   }
-  list.innerHTML = notes.map((n, i) => `
+  list.innerHTML=notes.map((n,i)=>`
     <div class="ncard fi2" id="nc-${i}">
       <div class="nc-head" onclick="toggleNC(${i})">
         <div class="nc-ico">📄</div>
         <div class="nc-meta">
           <div class="nc-title">${esc(n.title)}</div>
-          <div class="nc-info">por ${esc(n.author || '?')} · ${n.date || ''}</div>
+          <div class="nc-info">por ${esc(n.author||'?')} · ${n.date||''}</div>
         </div>
         <div class="nc-acts" onclick="event.stopPropagation()">
           <button class="btn bic bsm" onclick="renNote(${i})" title="Renomear">
@@ -1075,7 +903,7 @@ function renderNotes(notes) {
           <button class="tool-btn" onclick="hn(${i})" style="color:var(--warn)">◈</button>
         </div>
         <div class="n-area" id="na-${i}" contenteditable="true" spellcheck="true"
-             data-placeholder="Escreve aqui as tuas notas..." oninput="onNI(${i})">${n.html || ''}</div>
+             data-placeholder="Escreve aqui as tuas notas..." oninput="onNI(${i})">${n.html||''}</div>
         <div class="n-foot">
           <div class="sv-st"><div class="sv-dot" id="d-${i}"></div><span id="dt-${i}">Guardado</span></div>
           <button class="btn bp bsm" onclick="saveNote(${i})">
@@ -1087,366 +915,285 @@ function renderNotes(notes) {
     </div>`).join('');
 }
 
-function toggleNC(i) { document.getElementById('nc-' + i).classList.toggle('exp'); }
-function fn(i, cmd, val) { document.execCommand(cmd, false, val || null); document.getElementById('na-' + i).focus(); }
-function hn(i) { document.execCommand('hiliteColor', false, 'rgba(168,85,247,.3)'); document.getElementById('na-' + i).focus(); }
-
-function onNI(i) {
-  const d = document.getElementById('d-' + i);
-  const t = document.getElementById('dt-' + i);
-  if (d) { d.className = 'sv-dot uns'; t.textContent = 'Não guardado'; }
+function toggleNC(i){
+  document.getElementById('nc-'+i).classList.toggle('exp');
+}
+function fn(i,cmd,val){ document.execCommand(cmd,false,val||null); document.getElementById('na-'+i).focus(); }
+function hn(i){ document.execCommand('hiliteColor',false,'rgba(168,85,247,.3)'); document.getElementById('na-'+i).focus(); }
+function onNI(i){
+  const d=document.getElementById('d-'+i), t=document.getElementById('dt-'+i);
+  if(d){d.className='sv-dot uns';t.textContent='Não guardado';}
   clearTimeout(svt[i]);
-  svt[i] = setTimeout(() => saveNote(i), 2000);
+  svt[i]=setTimeout(()=>saveNote(i),2000);
 }
-
-async function saveNote(i) {
-  const notes = await cloudLoadNotes(CD);
-  if (!notes[i]) return;
-  const a = document.getElementById('na-' + i);
-  if (!a) return;
-  notes[i].html   = a.innerHTML;
-  notes[i].author = CU;
-  notes[i].date   = new Date().toLocaleString('pt-PT');
-  await cloudSaveNotes(CD, notes);
-  const d = document.getElementById('d-' + i);
-  const t = document.getElementById('dt-' + i);
-  if (d) { d.className = 'sv-dot'; t.textContent = 'Guardado'; }
-  toast('Nota guardada ✓', 'ok');
+async function saveNote(i){
+  const notes=lg(CD,'notes',[]);
+  if(!notes[i]) return;
+  const a=document.getElementById('na-'+i);
+  if(!a) return;
+  notes[i].html=a.innerHTML;
+  notes[i].author=CU;
+  notes[i].date=new Date().toLocaleString('pt-PT');
+  await ss(CD,'notes',notes);
+  const d=document.getElementById('d-'+i), t=document.getElementById('dt-'+i);
+  if(d){d.className='sv-dot';t.textContent='Guardado';}
+  updStats(); buildSB();
+  toast('Nota guardada e partilhada ✓','ok');
 }
-
-function openCN() {
-  document.getElementById('cn-title').value = '';
-  document.getElementById('cnmod').classList.add('op');
-  setTimeout(() => document.getElementById('cn-title').focus(), 80);
-}
-function closeCN() { document.getElementById('cnmod').classList.remove('op'); }
-function closeCNOverlay(e) { if (e.target === document.getElementById('cnmod')) closeCN(); }
-
-async function confirmCN() {
-  const title = document.getElementById('cn-title').value.trim();
-  if (!title) { toast('Escreve um título', 'er'); return; }
-  const notes = await cloudLoadNotes(CD);
-  notes.unshift({
-    id:     Date.now(),
-    title,
-    html:   '',
-    author: CU,
-    date:   new Date().toLocaleString('pt-PT'),
-  });
-  await cloudSaveNotes(CD, notes);
-  closeCN();
+function openCN(){ document.getElementById('cn-title').value=''; document.getElementById('cnmod').classList.add('op'); setTimeout(()=>document.getElementById('cn-title').focus(),80); }
+function closeCN(e){ if(e&&e.target!==document.getElementById('cnmod')) return; document.getElementById('cnmod').classList.remove('op'); }
+async function confirmCN(){
+  const title=document.getElementById('cn-title').value.trim();
+  if(!title){ toast('Escreve um título','er'); return; }
+  const notes=lg(CD,'notes',[]);
+  notes.unshift({id:Date.now(),title,html:'',author:CU,date:new Date().toLocaleString('pt-PT')});
+  await ss(CD,'notes',notes);
+  document.getElementById('cnmod').classList.remove('op');
   renderNotes(notes);
-  updStats();
-  buildSB();
-  toast('Nota criada!', 'ok');
-  setTimeout(() => {
-    const c = document.getElementById('nc-0');
-    if (c) { c.classList.add('exp'); const a = document.getElementById('na-0'); if (a) a.focus(); }
-  }, 80);
+  updStats(); buildSB();
+  toast('Nota criada!','ok');
+  setTimeout(()=>{ const c=document.getElementById('nc-0'); if(c){c.classList.add('exp');const a=document.getElementById('na-0');if(a)a.focus();} },80);
 }
-
-async function renNote(i) {
-  const notes = await cloudLoadNotes(CD);
-  const nv = prompt('Novo nome:', notes[i].title);
-  if (!nv || !nv.trim()) return;
-  notes[i].title = nv.trim();
-  await cloudSaveNotes(CD, notes);
+async function renNote(i){
+  const notes=lg(CD,'notes',[]);
+  const nv=prompt('Novo nome:',notes[i].title);
+  if(!nv||!nv.trim()) return;
+  notes[i].title=nv.trim();
+  await ss(CD,'notes',notes);
   renderNotes(notes);
-  toast('Nota renomeada', 'ok');
+  toast('Nota renomeada','ok');
 }
-
-async function delNote(i) {
-  const notes = await cloudLoadNotes(CD);
-  if (!confirm(`Eliminar "${notes[i].title}"?`)) return;
-  notes.splice(i, 1);
-  await cloudSaveNotes(CD, notes);
+async function delNote(i){
+  const notes=lg(CD,'notes',[]);
+  if(!confirm(`Eliminar "${notes[i].title}"?`)) return;
+  notes.splice(i,1);
+  await ss(CD,'notes',notes);
   renderNotes(notes);
-  updStats();
-  buildSB();
+  updStats(); buildSB();
   toast('Nota eliminada');
 }
 
-/* ══════════════════════════════════════════
-   FILES — UI
-══════════════════════════════════════════ */
-
-async function loadFiles() {
-  const files = await cloudLoadFiles(CD);
+/* ══ FILES ══ */
+async function loadFiles(){
+  const files=await sg(CD,'files',[]);
+  ls(CD,'files',files);
   renderFiles(files);
 }
 
-function renderFiles(files) {
-  const list = document.getElementById('file-list');
-  if (!files.length) {
-    list.innerHTML = `<div class="empty"><div class="ico">📭</div><p>Nenhum ficheiro carregado ainda</p></div>`;
-    return;
-  }
-  list.innerHTML = files.map((f, i) => {
-    const cp    = canPrev(f.type);
-    const isImg = f.type && f.type.startsWith('image/');
-    return `
-      <div class="fitem fi2" id="fi-${i}">
-        <div class="fh">
-          <div class="fic-w">${fIcon(f.type)}</div>
-          <div class="fmeta">
-            <div class="fname-row">
-              <span class="fname" id="fn-${i}">${esc(f.name)}</span>
-              <button class="btn bic bsm" onclick="renFile(${i})" title="Editar nome" style="width:22px;height:22px;padding:0;flex-shrink:0">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              </button>
-            </div>
-            <div class="finfo">${f.size} · ${f.date} · ${esc(f.by || '?')}</div>
-          </div>
-          <div class="facts">
-            <button class="btn bic" onclick="dlFile(${i})" title="Descarregar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            </button>
-            <button class="btn bic" onclick="delFile(${i})" title="Eliminar" style="color:var(--err)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+function renderFiles(files){
+  const list=document.getElementById('file-list');
+  if(!files.length){ list.innerHTML=`<div class="empty"><div class="ico">📭</div><p>Nenhum ficheiro carregado ainda</p></div>`; return; }
+  list.innerHTML=files.map((f,i)=>{
+    const cp=canPrev(f.type);
+    const isImg=f.type&&f.type.startsWith('image/');
+    return `<div class="fitem fi2" id="fi-${i}">
+      <div class="fh">
+        <div class="fic-w">${fIcon(f.type)}</div>
+        <div class="fmeta">
+          <div class="fname-row">
+            <span class="fname" id="fn-${i}">${esc(f.name)}</span>
+            <button class="btn bic bsm" onclick="renFile(${i})" title="Editar nome" style="width:22px;height:22px;padding:0;flex-shrink:0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
           </div>
+          <div class="finfo">${f.size} · ${f.date} · ${esc(f.by||'?')}</div>
         </div>
-        ${cp ? `
-          <button class="prv-btn" id="pb-${i}" onclick="togPrev(${i})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            Ver prévia
+        <div class="facts">
+          <button class="btn bic" onclick="dlFile(${i})" title="Descarregar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </button>
-          <div class="prv-area" id="pa-${i}">
-            <div class="prv-inner" id="pi-${i}"></div>
-            ${isImg ? `<div class="zbar">
-              <button class="zmb" onclick="zf(${i},-.2)">−</button>
-              <span class="zval" id="zv-${i}">100%</span>
-              <button class="zmb" onclick="zf(${i},.2)">+</button>
-              <button class="zmb" onclick="zf(${i},0,true)">↺</button>
-            </div>` : ''}
-          </div>` : ''}
-      </div>`;
+          <button class="btn bic" onclick="delFile(${i})" title="Eliminar" style="color:var(--err)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+      ${cp?`<button class="prv-btn" id="pb-${i}" onclick="togPrev(${i})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        Ver prévia
+      </button>
+      <div class="prv-area" id="pa-${i}">
+        <div class="prv-inner" id="pi-${i}"></div>
+        ${isImg?`<div class="zbar">
+          <button class="zmb" onclick="zf(${i},-.2)">−</button>
+          <span class="zval" id="zv-${i}">100%</span>
+          <button class="zmb" onclick="zf(${i},.2)">+</button>
+          <button class="zmb" onclick="zf(${i},0,true)">↺</button>
+        </div>`:''}
+      </div>`:''}
+    </div>`;
   }).join('');
 }
 
-/* File type helpers */
-function canPrev(t) {
-  if (!t) return false;
-  return t.startsWith('image/') || t.includes('pdf') || t.startsWith('text/') ||
-         t.startsWith('audio/') || t.startsWith('video/') ||
-         t.includes('mp4') || t.includes('mp3') || t.includes('ogg') || t.includes('webm');
-}
-
-function fIcon(t) {
-  if (!t) return '📄';
-  if (t.startsWith('image/'))  return '🖼️';
-  if (t.includes('pdf'))       return '📕';
-  if (t.startsWith('audio/') || t.includes('mp3') || t.includes('ogg')) return '🎵';
-  if (t.startsWith('video/') || t.includes('mp4') || t.includes('webm')) return '🎬';
-  if (t.includes('word') || t.includes('document')) return '📝';
-  if (t.includes('sheet') || t.includes('excel') || t.includes('csv'))   return '📊';
-  if (t.includes('presentation') || t.includes('powerpoint'))             return '📊';
-  if (t.startsWith('text/')) return '📄';
-  if (t.includes('zip') || t.includes('rar')) return '📦';
+function canPrev(t){ if(!t) return false; return t.startsWith('image/')||t.includes('pdf')||t.startsWith('text/')||t.startsWith('audio/')||t.startsWith('video/')||t.includes('mp4')||t.includes('mp3')||t.includes('ogg')||t.includes('webm'); }
+function fIcon(t){
+  if(!t) return '📄';
+  if(t.startsWith('image/')) return '🖼️';
+  if(t.includes('pdf')) return '📕';
+  if(t.startsWith('audio/')||t.includes('mp3')||t.includes('ogg')) return '🎵';
+  if(t.startsWith('video/')||t.includes('mp4')||t.includes('webm')) return '🎬';
+  if(t.includes('word')||t.includes('document')) return '📝';
+  if(t.includes('sheet')||t.includes('excel')||t.includes('csv')) return '📊';
+  if(t.includes('presentation')||t.includes('powerpoint')) return '📊';
+  if(t.startsWith('text/')) return '📄';
+  if(t.includes('zip')||t.includes('rar')) return '📦';
   return '📁';
 }
+function fmtB(b){ if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(1)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
 
-/* File preview */
-function togPrev(i) {
-  const btn   = document.getElementById('pb-' + i);
-  const area  = document.getElementById('pa-' + i);
-  const inner = document.getElementById('pi-' + i);
-  const op = area.classList.toggle('op');
-  btn.classList.toggle('op', op);
-  const nodes = [...btn.childNodes].filter(n => n.nodeType === 3);
-  if (nodes.length) nodes[0].textContent = ' ' + (op ? 'Fechar prévia' : 'Ver prévia');
-  if (op && !inner.dataset.loaded) {
-    inner.dataset.loaded = '1';
-    const files = lsGet(CD, 'files');
-    buildPrev(inner, files[i], i);
+function togPrev(i){
+  const btn=document.getElementById('pb-'+i);
+  const area=document.getElementById('pa-'+i);
+  const inner=document.getElementById('pi-'+i);
+  const op=area.classList.toggle('op');
+  btn.classList.toggle('op',op);
+  // Update label text node
+  const nodes=[...btn.childNodes].filter(n=>n.nodeType===3);
+  if(nodes.length) nodes[0].textContent=' '+(op?'Fechar prévia':'Ver prévia');
+  if(op && !inner.dataset.loaded){
+    inner.dataset.loaded='1';
+    const files=lg(CD,'files',[]);
+    buildPrev(inner,files[i],i);
   }
 }
 
-function buildPrev(inner, f, i) {
-  inner.innerHTML = '';
-  const t = f.type || '';
-  if (t.startsWith('image/')) {
-    const w = document.createElement('div'); w.className = 'pimg-w'; w.id = 'pw-' + i;
-    const img = document.createElement('img'); img.src = f.data; img.className = 'pimg'; img.id = 'pimg-' + i; img.draggable = false;
+function buildPrev(inner,f,i){
+  inner.innerHTML='';
+  const t=f.type||'';
+  if(t.startsWith('image/')){
+    const w=document.createElement('div'); w.className='pimg-w'; w.id='pw-'+i;
+    const img=document.createElement('img'); img.src=f.data; img.className='pimg'; img.id='pimg-'+i; img.draggable=false;
     w.appendChild(img); inner.appendChild(w);
-    enableDrag(w); fz[i] = 1;
-  } else if (t.includes('pdf')) {
-    const fr = document.createElement('iframe'); fr.src = f.data; fr.className = 'piframe'; inner.appendChild(fr);
-  } else if (t.startsWith('audio/') || t.includes('mp3') || t.includes('ogg')) {
-    const a = document.createElement('audio'); a.src = f.data; a.controls = true; a.className = 'pmedia'; inner.appendChild(a);
-  } else if (t.startsWith('video/') || t.includes('mp4') || t.includes('webm')) {
-    const v = document.createElement('video'); v.src = f.data; v.controls = true; v.className = 'pmedia'; inner.appendChild(v);
-  } else if (t.startsWith('text/') || t === '') {
-    const pre = document.createElement('pre'); pre.className = 'ptxt';
-    try { pre.textContent = atob((f.data.split(',')[1]) || ''); } catch { pre.textContent = 'Não foi possível mostrar.'; }
+    enableDrag(w); fz[i]=1;
+  } else if(t.includes('pdf')){
+    const fr=document.createElement('iframe'); fr.src=f.data; fr.className='piframe'; inner.appendChild(fr);
+  } else if(t.startsWith('audio/')||t.includes('mp3')||t.includes('ogg')){
+    const a=document.createElement('audio'); a.src=f.data; a.controls=true; a.className='pmedia'; inner.appendChild(a);
+  } else if(t.startsWith('video/')||t.includes('mp4')||t.includes('webm')){
+    const v=document.createElement('video'); v.src=f.data; v.controls=true; v.className='pmedia'; inner.appendChild(v);
+  } else if(t.startsWith('text/')||t===''){
+    const pre=document.createElement('pre'); pre.className='ptxt';
+    try{ pre.textContent=atob((f.data.split(',')[1])||''); }catch(e){ pre.textContent='Não foi possível mostrar.'; }
     inner.appendChild(pre);
   }
 }
 
-function zf(i, d, reset) {
-  if (reset) fz[i] = 1; else fz[i] = Math.max(.2, Math.min(5, (fz[i] || 1) + d));
-  const img = document.getElementById('pimg-' + i);
-  if (img) img.style.transform = `scale(${fz[i]})`;
-  const zv = document.getElementById('zv-' + i);
-  if (zv) zv.textContent = Math.round(fz[i] * 100) + '%';
+function zf(i,d,reset){
+  if(reset) fz[i]=1; else fz[i]=Math.max(.2,Math.min(5,(fz[i]||1)+d));
+  const img=document.getElementById('pimg-'+i);
+  if(img) img.style.transform=`scale(${fz[i]})`;
+  const zv=document.getElementById('zv-'+i);
+  if(zv) zv.textContent=Math.round(fz[i]*100)+'%';
 }
 
-function enableDrag(el) {
-  let dn = false, sx, sy, sl, st;
-  el.addEventListener('mousedown', e => { dn = true; el.style.cursor = 'grabbing'; sx = e.pageX - el.offsetLeft; sy = e.pageY - el.offsetTop; sl = el.scrollLeft; st = el.scrollTop; });
-  el.addEventListener('mouseup',   ()    => { dn = false; el.style.cursor = 'grab'; });
-  el.addEventListener('mouseleave',()    => { dn = false; el.style.cursor = 'grab'; });
-  el.addEventListener('mousemove', e => { if (!dn) return; e.preventDefault(); el.scrollLeft = sl - (e.pageX - el.offsetLeft - sx); el.scrollTop = st - (e.pageY - el.offsetTop - sy); });
+function enableDrag(el){
+  let dn=false,sx,sy,sl,st;
+  el.addEventListener('mousedown',e=>{dn=true;el.style.cursor='grabbing';sx=e.pageX-el.offsetLeft;sy=e.pageY-el.offsetTop;sl=el.scrollLeft;st=el.scrollTop;});
+  el.addEventListener('mouseup',()=>{dn=false;el.style.cursor='grab';});
+  el.addEventListener('mouseleave',()=>{dn=false;el.style.cursor='grab';});
+  el.addEventListener('mousemove',e=>{if(!dn)return;e.preventDefault();el.scrollLeft=sl-(e.pageX-el.offsetLeft-sx);el.scrollTop=st-(e.pageY-el.offsetTop-sy);});
 }
 
-function renFile(i) {
-  const span = document.getElementById('fn-' + i);
-  if (!span) return;
-  const old = span.textContent;
-  span.style.display = 'none';
-  const inp = document.createElement('input');
-  inp.type = 'text'; inp.value = old; inp.className = 'fname-inp';
-  const done = async () => {
-    const nv = (inp.value || '').trim();
-    if (nv && nv !== old) {
-      const files = await cloudLoadFiles(CD);
-      files[i].name = nv;
-      await cloudSaveFiles(CD, files);
-      toast('Nome atualizado', 'ok');
+function renFile(i){
+  const span=document.getElementById('fn-'+i);
+  if(!span) return;
+  const old=span.textContent;
+  span.style.display='none';
+  const inp=document.createElement('input');
+  inp.type='text'; inp.value=old; inp.className='fname-inp';
+  const done=async()=>{
+    const nv=(inp.value||'').trim();
+    if(nv && nv!==old){
+      const files=await sg(CD,'files',[]);
+      files[i].name=nv;
+      await ss(CD,'files',files);
+      toast('Nome atualizado','ok');
     }
-    span.textContent = nv || old; span.style.display = ''; inp.remove();
+    span.textContent=nv||old; span.style.display=''; inp.remove();
   };
-  inp.addEventListener('blur', done);
-  inp.addEventListener('keydown', e => { if (e.key === 'Enter') done(); if (e.key === 'Escape') { span.style.display = ''; inp.remove(); } });
-  span.parentNode.insertBefore(inp, span.nextSibling);
+  inp.addEventListener('blur',done);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')done();if(e.key==='Escape'){span.style.display='';inp.remove();}});
+  span.parentNode.insertBefore(inp,span.nextSibling);
   inp.focus(); inp.select();
 }
 
-function triggerUp() { document.getElementById('finput').click(); }
-function onDO(e) { e.preventDefault(); document.getElementById('upzone').classList.add('dov'); }
-function onDL()  { document.getElementById('upzone').classList.remove('dov'); }
-function onDrp(e) { e.preventDefault(); document.getElementById('upzone').classList.remove('dov'); handleFiles(e.dataTransfer.files); }
+function triggerUp(){ document.getElementById('finput').click(); }
+function onDO(e){ e.preventDefault(); document.getElementById('upzone').classList.add('dov'); }
+function onDL(){ document.getElementById('upzone').classList.remove('dov'); }
+function onDrp(e){ e.preventDefault(); document.getElementById('upzone').classList.remove('dov'); handleFiles(e.dataTransfer.files); }
 
-async function handleFiles(fl) {
-  if (!fl.length || !CD) return;
-  const existing = await cloudLoadFiles(CD);
-
-  for (const file of fl) {
-    if (file.size > MAX_FILE_MB * 1024 * 1024) {
-      toast(file.name + ': demasiado grande (máx ' + MAX_FILE_MB + 'MB)', 'er');
-      continue;
-    }
-    toast('A carregar ' + file.name + '...', '');
-    const meta = await cloudUploadFile(CD, file);
-    if (!meta) {
-      toast('Erro ao carregar ' + file.name, 'er');
-      continue;
-    }
-    existing.unshift(meta);
-    await cloudSaveFiles(CD, existing);
-    toast(file.name + ' carregado!', 'ok');
-  }
-  loadFiles();
-  updStats();
-  buildSB();
+function handleFiles(fl){
+  if(!fl.length) return;
+  const arr=[...fl]; let done=0;
+  const existing=lg(CD,'files',[]);
+  const toAdd=[];
+  arr.forEach(f=>{
+    if(f.size>20*1024*1024){ toast(f.name+': demasiado grande (máx 20MB)','er'); done++; if(done===arr.length) finFiles(existing,toAdd); return; }
+    const r=new FileReader();
+    r.onload=e=>{ toAdd.push({name:f.name,type:f.type,size:fmtB(f.size),date:new Date().toLocaleDateString('pt-PT'),by:CU,data:e.target.result}); done++; if(done===arr.length) finFiles(existing,toAdd); };
+    r.onerror=()=>{ done++; if(done===arr.length) finFiles(existing,toAdd); };
+    r.readAsDataURL(f);
+  });
 }
-
-async function dlFile(i) {
-  const files = await cloudLoadFiles(CD);
-  const f = files[i];
-  const a = document.createElement('a');
-  a.href = f.data; a.download = f.name; a.click();
+async function finFiles(existing,newF){
+  const all=[...existing,...newF];
+  await ss(CD,'files',all);
+  renderFiles(all); updStats(); buildSB();
+  toast(newF.length+' ficheiro(s) enviado(s)','ok');
 }
-
-async function delFile(i) {
-  const files = await cloudLoadFiles(CD);
-  if (!confirm(`Eliminar "${files[i].name}"?`)) return;
-  const fileToDelete = files[i];
-  if (fileToDelete.path) await cloudDeleteFileStorage(fileToDelete.path);
-  files.splice(i, 1);
-  await cloudSaveFiles(CD, files);
-  renderFiles(files);
-  updStats();
-  buildSB();
+function dlFile(i){ const f=lg(CD,'files',[])[i]; const a=document.createElement('a'); a.href=f.data; a.download=f.name; a.click(); }
+async function delFile(i){
+  const files=lg(CD,'files',[]);
+  if(!confirm(`Eliminar "${files[i].name}"?`)) return;
+  files.splice(i,1);
+  await ss(CD,'files',files);
+  renderFiles(files); updStats(); buildSB();
   toast('Ficheiro eliminado');
 }
 
-/* ══════════════════════════════════════════
-   TASKS — UI
-══════════════════════════════════════════ */
-
-async function loadTasks() {
-  const tasks = await cloudLoadTasks(CD);
+/* ══ TASKS ══ */
+async function loadTasks(){
+  const tasks=await sg(CD,'tasks',[]);
+  ls(CD,'tasks',tasks);
   renderTasks(tasks);
 }
-
-function renderTasks(tasks) {
-  const l = document.getElementById('t-list');
-  if (!tasks.length) {
-    l.innerHTML = `<div class="empty"><div class="ico">✅</div><p>Nenhuma tarefa ainda</p></div>`;
-    return;
-  }
-  l.innerHTML = tasks.map((t, i) => `
-    <div class="titem fi2 ${t.done ? 'dn' : ''}">
-      <input type="checkbox" class="tck" ${t.done ? 'checked' : ''} onchange="togTask(${i})">
+function renderTasks(tasks){
+  const l=document.getElementById('t-list');
+  if(!tasks.length){ l.innerHTML=`<div class="empty"><div class="ico">✅</div><p>Nenhuma tarefa ainda</p></div>`; return; }
+  l.innerHTML=tasks.map((t,i)=>`
+    <div class="titem fi2 ${t.done?'dn':''}">
+      <input type="checkbox" class="tck" ${t.done?'checked':''} onchange="togTask(${i})">
       <span class="ttxt">${esc(t.text)}</span>
-      <span class="tdt">${esc(t.by || '')} · ${t.date || ''}</span>
+      <span class="tdt">${esc(t.by||'')} · ${t.date||''}</span>
       <button class="tdel" onclick="delTask(${i})">×</button>
     </div>`).join('');
 }
-
-async function addTask() {
-  const inp = document.getElementById('ti');
-  const txt = (inp.value || '').trim();
-  if (!txt) return;
-  const tasks = await cloudLoadTasks(CD);
-  tasks.unshift({
-    id:   Date.now(),
-    text: txt,
-    done: false,
-    by:   CU,
-    date: new Date().toLocaleDateString('pt-PT'),
-  });
-  await cloudSaveTasks(CD, tasks);
-  renderTasks(tasks);
-  inp.value = '';
-  updStats();
-  buildSB();
-  toast('Tarefa adicionada', 'ok');
+async function addTask(){
+  const inp=document.getElementById('ti'); const txt=(inp.value||'').trim(); if(!txt) return;
+  const tasks=lg(CD,'tasks',[]);
+  tasks.unshift({id:Date.now(),text:txt,done:false,by:CU,date:new Date().toLocaleDateString('pt-PT')});
+  await ss(CD,'tasks',tasks);
+  renderTasks(tasks); inp.value=''; updStats(); buildSB();
+  toast('Tarefa adicionada','ok');
+}
+async function togTask(i){
+  const tasks=lg(CD,'tasks',[]); tasks[i].done=!tasks[i].done;
+  await ss(CD,'tasks',tasks); renderTasks(tasks);
+}
+async function delTask(i){
+  const tasks=lg(CD,'tasks',[]); tasks.splice(i,1);
+  await ss(CD,'tasks',tasks); renderTasks(tasks); updStats(); buildSB();
 }
 
-async function togTask(i) {
-  const tasks = await cloudLoadTasks(CD);
-  tasks[i].done = !tasks[i].done;
-  await cloudSaveTasks(CD, tasks);
-  renderTasks(tasks);
-}
-
-async function delTask(i) {
-  const tasks = await cloudLoadTasks(CD);
-  tasks.splice(i, 1);
-  await cloudSaveTasks(CD, tasks);
-  renderTasks(tasks);
-  updStats();
-  buildSB();
-}
-
-/* ══════════════════════════════════════════
-   FLASHCARDS — UI
-══════════════════════════════════════════ */
-
-async function loadCards() {
-  const cards = await cloudLoadCards(CD);
+/* ══ FLASHCARDS ══ */
+async function loadCards(){
+  const cards=await sg(CD,'cards',[]);
+  ls(CD,'cards',cards);
   renderCards(cards);
 }
-
-function renderCards(cards) {
-  const g = document.getElementById('fc-grid');
-  if (!cards.length) {
-    g.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ico">🃏</div><p>Nenhum flashcard ainda</p></div>`;
-    return;
-  }
-  g.innerHTML = cards.map((c, i) => `
+function renderCards(cards){
+  const g=document.getElementById('fc-grid');
+  if(!cards.length){ g.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ico">🃏</div><p>Nenhum flashcard ainda</p></div>`; return; }
+  g.innerHTML=cards.map((c,i)=>`
     <div class="fc fi2" onclick="flipFC(this)">
       <div class="fc-in">
         <div class="fc-face"><div class="fc-lbl">Pergunta</div><div class="fc-ct">${esc(c.front)}</div></div>
@@ -1455,56 +1202,52 @@ function renderCards(cards) {
       <button class="fc-del" onclick="delFC(${i},event)">×</button>
     </div>`).join('');
 }
-
-function flipFC(el) { el.classList.toggle('fl'); }
-
-async function addFC() {
-  const fr = (document.getElementById('cfr').value || '').trim();
-  const bk = (document.getElementById('cbk').value || '').trim();
-  if (!fr || !bk) { toast('Preenche a pergunta e resposta', 'er'); return; }
-  const cards = await cloudLoadCards(CD);
-  cards.unshift({ id: Date.now(), front: fr, back: bk, by: CU });
-  await cloudSaveCards(CD, cards);
+function flipFC(el){ el.classList.toggle('fl'); }
+async function addFC(){
+  const fr=(document.getElementById('cfr').value||'').trim();
+  const bk=(document.getElementById('cbk').value||'').trim();
+  if(!fr||!bk){ toast('Preenche a pergunta e resposta','er'); return; }
+  const cards=lg(CD,'cards',[]);
+  cards.unshift({id:Date.now(),front:fr,back:bk,by:CU});
+  await ss(CD,'cards',cards);
   renderCards(cards);
-  document.getElementById('cfr').value = '';
-  document.getElementById('cbk').value = '';
-  updStats();
-  buildSB();
-  toast('Flashcard criado!', 'ok');
+  document.getElementById('cfr').value=''; document.getElementById('cbk').value='';
+  updStats(); buildSB();
+  toast('Flashcard criado!','ok');
 }
-
-async function delFC(i, e) {
+async function delFC(i,e){
   e.stopPropagation();
-  const cards = await cloudLoadCards(CD);
-  cards.splice(i, 1);
-  await cloudSaveCards(CD, cards);
-  renderCards(cards);
-  updStats();
-  buildSB();
+  const cards=lg(CD,'cards',[]); cards.splice(i,1);
+  await ss(CD,'cards',cards); renderCards(cards); updStats(); buildSB();
 }
 
-/* ══════════════════════════════════════════
-   EXPORT
-══════════════════════════════════════════ */
-
-async function exportData() {
-  const out = {};
-  for (const d of DISCS) {
-    out[d.id] = {
-      notes:  (await cloudLoadNotes(d.id)).map(n => ({ title: n.title, author: n.author, date: n.date })),
-      tasks:  await cloudLoadTasks(d.id),
-      cards:  await cloudLoadCards(d.id),
-      files:  (await cloudLoadFiles(d.id)).map(f => ({ name: f.name, type: f.type, size: f.size, date: f.date, by: f.by })),
+/* ══ EXPORT ══ */
+function exportData(){
+  const data={};
+  DISCS.forEach(d=>{
+    data[d.id]={
+      notes:lg(d.id,'notes',[]).map(n=>({title:n.title,author:n.author,date:n.date})),
+      tasks:lg(d.id,'tasks',[]),
+      cards:lg(d.id,'cards',[]),
+      files:lg(d.id,'files',[]).map(f=>({name:f.name,type:f.type,size:f.size,date:f.date,by:f.by}))
     };
-  }
-  const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'studyblr_' + new Date().toISOString().slice(0, 10) + '.json';
-  a.click();
-  toast('Backup exportado!', 'ok');
+  });
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='studyblr_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  toast('Backup exportado!','ok');
 }
 
+/* ══ UTILS ══ */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toast(msg,type=''){
+  const w=document.getElementById('tw');
+  const el=document.createElement('div');
+  el.className='toast '+(type==='ok'?'ok':type==='er'?'er':'');
+  el.textContent=(type==='ok'?'✓ ':type==='er'?'✕ ':'· ')+msg;
+  w.appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
 </script>
 </body>
 </html>
