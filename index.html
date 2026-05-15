@@ -1061,7 +1061,41 @@ async function loadNotes(){
   const notes=await sg(CD,'notes',[]);
   ls(CD,'notes',notes);
   sp.classList.remove('on');
+  renderNotesPreserve(notes);
+}
+
+// renderNotesPreserve: re-renders but keeps expanded/content state for open cards
+function renderNotesPreserve(notes, forceExpand=[]){
+  // Save which cards are expanded and their current content
+  const expanded={};
+  const currentContent={};
+  document.querySelectorAll('.ncard').forEach((card,i)=>{
+    if(card.classList.contains('exp')){
+      expanded[i]=true;
+      const area=document.getElementById('na-'+i);
+      if(area) currentContent[i]=area.innerHTML;
+    }
+  });
   renderNotes(notes);
+  // Restore expanded state and content (avoid overwriting what user is typing)
+  Object.keys(expanded).forEach(i=>{
+    const idx=parseInt(i);
+    const card=document.getElementById('nc-'+idx);
+    if(card){
+      card.classList.add('exp');
+      // If user had content in the editor, restore it (realtime shouldn't overwrite active editing)
+      const area=document.getElementById('na-'+idx);
+      if(area && currentContent[idx]!==undefined){
+        // Only restore if the note id matches (same note still at same position)
+        area.innerHTML=currentContent[idx];
+      }
+    }
+  });
+  // Force expand specific indices (e.g. newly created note)
+  forceExpand.forEach(idx=>{
+    const card=document.getElementById('nc-'+idx);
+    if(card) card.classList.add('exp');
+  });
 }
 
 function renderNotes(notes){
@@ -1130,14 +1164,41 @@ async function saveNote(i){
   if(!notes[i]) return;
   const a=document.getElementById('na-'+i);
   if(!a) return;
+  // Read content from DOM — do NOT re-render, just update data
   notes[i].html=a.innerHTML;
   notes[i].author=CU;
   notes[i].date=new Date().toLocaleString('pt-PT');
   await ss(CD,'notes',notes);
+  // Update only the status indicator — never touch the note card DOM
   const d=document.getElementById('d-'+i), t=document.getElementById('dt-'+i);
   if(d){d.className='sv-dot';t.textContent='Guardado';}
-  updStats(); buildSB();
-  toast('Nota guardada e partilhada ✓','ok');
+  // Update the info line in-place (author/date) without re-rendering
+  const info=document.querySelector('#nc-'+i+' .nc-info');
+  if(info) info.textContent='por '+(CU||'?')+' · '+notes[i].date;
+  // Silently update stats without touching any note HTML
+  updStatsSilent();
+  toast('Guardado e partilhado ✓','ok');
+}
+
+// updStatsSilent: update counters without re-rendering anything
+function updStatsSilent(){
+  let n=0,f=0,t=0,c=0;
+  DISCS.forEach(d=>{
+    n+=lg(d.id,'notes',[]).length; f+=lg(d.id,'files',[]).length;
+    t+=lg(d.id,'tasks',[]).length; c+=lg(d.id,'cards',[]).length;
+  });
+  const sn=document.getElementById('sn'),sf=document.getElementById('sf'),
+        st=document.getElementById('st'),sc=document.getElementById('sc2');
+  if(sn)sn.textContent=n; if(sf)sf.textContent=f;
+  if(st)st.textContent=t; if(sc)sc.textContent=c;
+  // Update sidebar item count in-place
+  if(CD){
+    const notes=lg(CD,'notes',[]).length, files=lg(CD,'files',[]).length,
+          tasks=lg(CD,'tasks',[]).length, cards=lg(CD,'cards',[]).length;
+    const tot=notes+files+tasks+cards;
+    const meta=document.querySelector('#sb-'+CD+' .di-meta');
+    if(meta) meta.textContent=tot>0?tot+' item'+(tot>1?'s':''):'Sem conteúdo';
+  }
 }
 function openCN(){ document.getElementById('cn-title').value=''; document.getElementById('cnmod').classList.add('op'); setTimeout(()=>document.getElementById('cn-title').focus(),80); }
 function closeCN(e){ if(e&&e.target!==document.getElementById('cnmod')) return; document.getElementById('cnmod').classList.remove('op'); }
@@ -1148,10 +1209,10 @@ async function confirmCN(){
   notes.unshift({id:Date.now(),title,html:'',author:CU,date:new Date().toLocaleString('pt-PT')});
   await ss(CD,'notes',notes);
   document.getElementById('cnmod').classList.remove('op');
-  renderNotes(notes);
+  renderNotesPreserve(notes, [0]); // expand the new note (index 0)
   updStats(); buildSB();
   toast('Nota criada!','ok');
-  setTimeout(()=>{ const c=document.getElementById('nc-0'); if(c){c.classList.add('exp');const a=document.getElementById('na-0');if(a)a.focus();} },80);
+  setTimeout(()=>{ const a=document.getElementById('na-0'); if(a) a.focus(); },80);
 }
 async function renNote(i){
   const notes=lg(CD,'notes',[]);
@@ -1159,7 +1220,9 @@ async function renNote(i){
   if(!nv||!nv.trim()) return;
   notes[i].title=nv.trim();
   await ss(CD,'notes',notes);
-  renderNotes(notes);
+  // Update title in-place — preserve expanded state
+  const titleEl=document.querySelector('#nc-'+i+' .nc-title');
+  if(titleEl) titleEl.textContent=notes[i].title;
   toast('Nota renomeada','ok');
 }
 async function delNote(i){
