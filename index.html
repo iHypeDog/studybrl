@@ -473,6 +473,94 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
   .dc-name{font-size:.72rem}
 }
 
+
+/* ═══════════════════════════════
+   CALENDAR MODAL
+═══════════════════════════════ */
+#cal-modal{
+  position:fixed;inset:0;z-index:700;background:rgba(5,5,10,.88);
+  backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;
+  padding:16px;
+}
+#cal-modal.op{display:flex}
+.cal-box{
+  background:var(--bg2);border:1px solid var(--pb);border-radius:var(--r);
+  width:100%;max-width:860px;max-height:92vh;display:flex;flex-direction:column;
+  overflow:hidden;box-shadow:var(--sh);animation:mdi .2s ease;
+}
+.cal-head{
+  padding:14px 18px;border-bottom:1px solid var(--pb);background:var(--bg3);
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+.cal-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--tx);flex:1}
+.cal-nav{display:flex;align-items:center;gap:6px}
+.cal-nav-btn{
+  width:30px;height:30px;background:var(--sur);border:1px solid var(--pb);
+  border-radius:6px;color:var(--txd);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:all .2s;font-size:1rem;
+}
+.cal-nav-btn:hover{color:var(--ac);border-color:rgba(168,85,247,.5)}
+.cal-month-lbl{
+  font-family:'DM Serif Display',serif;font-size:1rem;color:var(--ac);
+  min-width:130px;text-align:center;
+}
+.cal-body{flex:1;overflow-y:auto;padding:16px}
+/* Day grid */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{
+  text-align:center;font-size:.58rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--txm);padding:4px 0 8px;
+}
+.cal-day{
+  min-height:72px;border-radius:var(--rs);border:1px solid var(--pb);
+  background:var(--sur);padding:6px;cursor:default;transition:border-color .2s;
+  display:flex;flex-direction:column;gap:3px;
+}
+.cal-day.today{border-color:rgba(168,85,247,.6);background:rgba(124,58,237,.1)}
+.cal-day.other-month{opacity:.35}
+.cal-day.has-tasks{border-color:rgba(34,211,238,.35);cursor:pointer}
+.cal-day.has-tasks:hover{border-color:rgba(34,211,238,.6);background:rgba(34,211,238,.05)}
+.cal-day-num{
+  font-size:.72rem;font-weight:700;color:var(--txd);line-height:1;
+}
+.cal-day.today .cal-day-num{color:var(--ac);font-size:.8rem}
+.cal-task-chip{
+  font-size:.58rem;line-height:1.3;padding:2px 5px;border-radius:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;
+}
+.cal-task-chip.done{background:rgba(92,84,128,.2);color:var(--txm);text-decoration:line-through}
+.cal-task-chip.overdue{background:rgba(244,63,94,.2);color:#f87171}
+.cal-task-chip.today-chip{background:rgba(245,158,11,.2);color:#fbbf24}
+.cal-task-chip.soon{background:rgba(251,146,60,.15);color:#fb923c}
+.cal-task-chip.normal{background:rgba(34,211,238,.12);color:var(--ok)}
+/* Task list panel (below calendar) */
+.cal-task-list{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.cal-titem{
+  background:var(--sur);border:1px solid var(--pb);border-radius:var(--rs);
+  padding:9px 12px;display:flex;align-items:center;gap:10px;
+}
+.cal-disc-badge{
+  font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:10px;
+  background:var(--pg);border:1px solid var(--pb);color:var(--ac);
+  white-space:nowrap;flex-shrink:0;
+}
+/* Agenda section title */
+.cal-sec{
+  font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--txm);margin:12px 0 6px;display:flex;align-items:center;gap:8px;
+}
+.cal-sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--pb),transparent)}
+/* Mobile calendar: smaller cells */
+@media(max-width:640px){
+  .cal-box{max-height:95vh;border-radius:var(--r) var(--r) 0 0;position:absolute;bottom:0;left:0;right:0;max-width:none}
+  .cal-grid{gap:3px}
+  .cal-day{min-height:52px;padding:4px}
+  .cal-day-num{font-size:.65rem}
+  .cal-task-chip{display:none}
+  .cal-day.has-tasks::after{content:'●';font-size:.5rem;color:var(--ok);display:block;text-align:center}
+  #cal-modal{padding:0;align-items:flex-end}
+}
+
 </style>
 </head>
 <body>
@@ -542,6 +630,10 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
     <div class="t-sep"></div>
     <div class="t-user"><div class="t-udot"></div><span id="t-uname">—</span></div>
     <div class="t-acts">
+      <button class="tb-btn" onclick="openCalendar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calendário
+      </button>
       <button class="tb-btn" onclick="exportData()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Exportar
@@ -650,6 +742,7 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
           <div class="tab-panel" id="tab-tasks">
             <div class="ti-row">
               <input type="text" class="ti" id="ti" placeholder="Nova tarefa... (Enter)" onkeydown="if(event.key==='Enter')addTask()">
+              <input type="date" class="ti" id="ti-date" style="max-width:160px;cursor:pointer" title="Data de entrega (opcional)">
               <button class="btn bp" onclick="addTask()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Adicionar
@@ -714,6 +807,10 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
       Cards
     </button>
+    <button class="mob-nav-btn" id="mn-cal" onclick="openCalendar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Agenda
+    </button>
   </nav>
 </div>
 
@@ -736,6 +833,23 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
 </div>
 
 <div class="tw" id="tw"></div>
+
+<!-- CALENDAR MODAL -->
+<div id="cal-modal" onclick="closeCalendar(event)">
+  <div class="cal-box" onclick="e=>e.stopPropagation()">
+    <div class="cal-head">
+      <div class="cal-title">📅 Calendário de Tarefas</div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
+        <div class="cal-month-lbl" id="cal-month-lbl">—</div>
+        <button class="cal-nav-btn" onclick="calNav(1)">›</button>
+        <button class="cal-nav-btn" onclick="calGoToday()" title="Hoje" style="font-size:.6rem;width:auto;padding:0 8px;font-family:'Syne',sans-serif;font-weight:700">HOJ</button>
+      </div>
+      <button class="cal-nav-btn" onclick="closeCalendar()" style="margin-left:8px;color:var(--err)">✕</button>
+    </div>
+    <div class="cal-body" id="cal-body"></div>
+  </div>
+</div>
 
 <script>
 'use strict';
@@ -767,23 +881,78 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
 */
 
 /* ══ ACCOUNTS ══ */
-const ACCS = { ze:'zedascouves', matolde:'matoldedosdinos', kika:'kika67pork' };
-let CU = null; // current user
+// Auth uses HASHES table below — SHA-256 only
+// Rate limiting state
+const _loginAttempts = {};
+const _loginBlocked  = {};
+let CU = null;
 
-function doLogin() {
+// SHA-256 via Web Crypto API
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Pre-computed SHA-256 hashes — no plaintext passwords stored anywhere
+// Passwords verified via Web Crypto API SHA-256 at login time
+const HASHES = {
+  ze:      '1a4c7bf61619f9196534c4b4dd638dd6bcfe9972303d608ceb58a9334b90fd3d',
+  matolde: 'ec1491da9343748aaaee862d5862041a062d9357814cc1bc4feadb8e4efce9e3',
+  kika:    '43264458d1ad964479b83011496028fde7b30ebc1e9228aa7bc77891c65da681'
+};
+
+async function doLogin() {
   const u = (document.getElementById('lu').value||'').trim().toLowerCase();
   const p = document.getElementById('lp').value||'';
   const err = document.getElementById('lerr');
-  if (ACCS[u] && ACCS[u]===p) {
+  const btn = document.querySelector('.l-btn');
+
+  // ── Rate limiting: block after 5 failed attempts for 5 min ──
+  const now = Date.now();
+  if(_loginBlocked[u] && now < _loginBlocked[u]){
+    const secs = Math.ceil((_loginBlocked[u]-now)/1000);
+    err.textContent = `Conta bloqueada. Tenta em ${secs}s.`;
+    err.classList.add('show');
+    webhook('🚫 LOGIN BLOQUEADO', `Utilizador: **${u}** | Bloqueio activo (${secs}s restantes)`, 0xff0000);
+    return;
+  }
+
+  // Disable button during async hash
+  btn.disabled=true; btn.textContent='A verificar...';
+
+  let hash = '';
+  try{ hash = await sha256(p); }catch(e){ hash=''; }
+
+  const valid = HASHES[u] && HASHES[u] === hash;
+
+  btn.disabled=false; btn.textContent='Entrar';
+
+  if(valid){
     err.classList.remove('show');
+    err.textContent='Nome ou password incorretos.';
+    delete _loginAttempts[u];
+    delete _loginBlocked[u];
     CU = u;
     sessionStorage.setItem('sb_u', u);
     document.getElementById('t-uname').textContent = u;
     document.getElementById('login').classList.remove('v');
     document.getElementById('app').classList.add('v');
     updateMobUsername(u);
+    webhook('✅ LOGIN', `Utilizador: **${u}** entrou no Studyblr | ${devInfo()}`, 0x22d3ee);
     init();
   } else {
+    _loginAttempts[u] = (_loginAttempts[u]||0) + 1;
+    const attempts = _loginAttempts[u];
+    const remaining = 5 - attempts;
+    if(attempts >= 5){
+      _loginBlocked[u] = Date.now() + 5*60*1000; // 5 min block
+      _loginAttempts[u] = 0;
+      err.textContent = 'Demasiadas tentativas. Conta bloqueada 5 minutos.';
+      webhook('🔒 CONTA BLOQUEADA', `Utilizador: **${u}** bloqueado após 5 tentativas falhadas`, 0xff6600);
+    } else {
+      err.textContent = `Credenciais incorretas. ${remaining} tentativa(s) restante(s).`;
+      webhook('⚠️ LOGIN FALHADO', `Utilizador tentado: **${u||'(vazio)'}** | Tentativa ${attempts}/5`, 0xf59e0b);
+    }
     err.classList.add('show');
     document.getElementById('lp').value = '';
   }
@@ -791,12 +960,42 @@ function doLogin() {
 
 function doLogout() {
   if (!confirm('Queres sair?')) return;
+  webhook('🚪 LOGOUT', `Utilizador: **${CU}** saiu do Studyblr`, 0x9333ea);
   CU = null;
   sessionStorage.removeItem('sb_u');
   document.getElementById('app').classList.remove('v');
   document.getElementById('login').classList.add('v');
   document.getElementById('lu').value = '';
   document.getElementById('lp').value = '';
+}
+
+/* ══ DISCORD WEBHOOK LOGGER ══ */
+const WH = 'https://discord.com/api/webhooks/1504912168620130324/6KDPYcKkuaeQX4ykk6SpfwNkAIpE_jqmTu4ShNm5vTmU6RbLo3USoW2HrDluWO0NsU_R';
+
+async function webhook(title, desc, color=0x7c3aed){
+  try{
+    const body = {
+      embeds:[{
+        title,
+        description: desc,
+        color,
+        footer:{ text:'Studyblr · ' + new Date().toLocaleString('pt-PT') },
+        thumbnail:{ url:'https://cdn.discordapp.com/emojis/1234567890.png' }
+      }]
+    };
+    await fetch(WH, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+  }catch(e){ /* silent fail — never break app for logging */ }
+}
+
+// Helper: get device info for logs
+function devInfo(){
+  const ua = navigator.userAgent;
+  const mob = /Mobi|Android/i.test(ua) ? '📱 Mobile' : '🖥️ Desktop';
+  return `${mob} | ${navigator.language} | ${screen.width}×${screen.height}`;
 }
 
 /* ══ DISCIPLINES ══ */
@@ -902,6 +1101,7 @@ window.addEventListener('load',()=>{
       document.getElementById('t-uname').textContent = su;
       document.getElementById('app').classList.add('v');
       updateMobUsername(su);
+      webhook('🔄 SESSÃO RESTAURADA', `**${su}** voltou ao Studyblr (sessão activa) | ${devInfo()}`, 0x9333ea);
       init();
     } else {
       document.getElementById('login').classList.add('v');
@@ -1013,16 +1213,26 @@ function buildHome(){
   });
 }
 
-function updStats(){
+async function updStats(){
+  // Pull fresh counts from Supabase for all disciplines
   let n=0,f=0,t=0,c=0;
-  DISCS.forEach(d=>{
-    n+=lg(d.id,'notes',[]).length; f+=lg(d.id,'files',[]).length;
-    t+=lg(d.id,'tasks',[]).length; c+=lg(d.id,'cards',[]).length;
-  });
+  for(const d of DISCS){
+    const notes = await sg(d.id,'notes',[]);
+    const files = await sg(d.id,'files',[]);
+    const tasks = await sg(d.id,'tasks',[]);
+    const cards = await sg(d.id,'cards',[]);
+    // update local cache too
+    ls(d.id,'notes',notes); ls(d.id,'files',files);
+    ls(d.id,'tasks',tasks); ls(d.id,'cards',cards);
+    n+=notes.length; f+=files.length; t+=tasks.length; c+=cards.length;
+  }
   document.getElementById('sn').textContent=n;
   document.getElementById('sf').textContent=f;
   document.getElementById('st').textContent=t;
   document.getElementById('sc2').textContent=c;
+  // Rebuild grid with fresh counts
+  buildSB();
+  buildHome();
 }
 
 function showHome(){
@@ -1189,6 +1399,7 @@ async function saveNote(i){
   if(info) info.textContent='por '+(CU||'?')+' · '+notes[i].date;
   // Silently update stats without touching any note HTML
   updStatsSilent();
+  webhook('💾 NOTA GUARDADA', `**${CU}** guardou uma nota em **${DISCS.find(d=>d.id===CD)?.name||CD}**`, 0x7c3aed);
   toast('Guardado e partilhado ✓','ok');
 }
 
@@ -1223,6 +1434,7 @@ async function confirmCN(){
   document.getElementById('cnmod').classList.remove('op');
   renderNotesPreserve(notes, [0]); // expand the new note (index 0)
   updStats(); buildSB();
+  webhook('📝 NOTA CRIADA', `**${CU}** criou a nota "**${title}**" em **${DISCS.find(d=>d.id===CD)?.name||CD}**`, 0x22d3ee);
   toast('Nota criada!','ok');
   setTimeout(()=>{
     const a=document.getElementById('na-0');
@@ -1247,6 +1459,7 @@ async function delNote(i){
   await ss(CD,'notes',notes);
   renderNotes(notes);
   updStats(); buildSB();
+  webhook('🗑️ NOTA ELIMINADA', `**${CU}** eliminou uma nota em **${DISCS.find(d=>d.id===CD)?.name||CD}**`, 0xf43f5e);
   toast('Nota eliminada');
 }
 
@@ -1454,6 +1667,8 @@ async function finFiles(existing,newF){
   _filesCache = all; // keep in-memory cache up to date
   await ss(CD,'files',all);
   renderFiles(all); updStats(); buildSB();
+  const fnames=newF.map(f=>f.name).join(', ');
+  webhook('📂 FICHEIRO ENVIADO', `**${CU}** enviou **${newF.length}** ficheiro(s) em **${DISCS.find(d=>d.id===CD)?.name||CD}**: \`${fnames}\``, 0x22d3ee);
   toast(newF.length+' ficheiro(s) enviado(s)','ok');
 }
 function dlFile(i){ const f=lg(CD,'files',[])[i]; const a=document.createElement('a'); a.href=f.data; a.download=f.name; a.click(); }
@@ -1463,6 +1678,7 @@ async function delFile(i){
   files.splice(i,1);
   await ss(CD,'files',files);
   renderFiles(files); updStats(); buildSB();
+  webhook('🗑️ FICHEIRO ELIMINADO', `**${CU}** eliminou um ficheiro em **${DISCS.find(d=>d.id===CD)?.name||CD}**`, 0xf43f5e);
   toast('Ficheiro eliminado');
 }
 
@@ -1475,20 +1691,50 @@ async function loadTasks(){
 function renderTasks(tasks){
   const l=document.getElementById('t-list');
   if(!tasks.length){ l.innerHTML=`<div class="empty"><div class="ico">✅</div><p>Nenhuma tarefa ainda</p></div>`; return; }
-  l.innerHTML=tasks.map((t,i)=>`
-    <div class="titem fi2 ${t.done?'dn':''}">
+  const today=new Date(); today.setHours(0,0,0,0);
+  l.innerHTML=tasks.map((t,i)=>{
+    let dueBadge='';
+    if(t.dueDate){
+      const due=new Date(t.dueDate); due.setHours(0,0,0,0);
+      const diff=Math.round((due-today)/(1000*60*60*24));
+      const fmt=due.toLocaleDateString('pt-PT',{day:'2-digit',month:'short'});
+      let col='var(--txm)', bg='rgba(92,84,128,.15)';
+      if(!t.done){
+        if(diff<0){col='var(--err)';bg='rgba(244,63,94,.15)';}
+        else if(diff===0){col='var(--warn)';bg='rgba(245,158,11,.15)';}
+        else if(diff<=3){col='#fb923c';bg='rgba(251,146,60,.12)';}
+        else{col='var(--ok)';bg='rgba(34,211,238,.1)';}
+      }
+      dueBadge=`<span style="font-size:.6rem;padding:2px 7px;border-radius:10px;background:${bg};color:${col};font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0">
+        ${diff<0&&!t.done?'⚠ ':diff===0&&!t.done?'🔥 ':'📅 '}${fmt}
+      </span>`;
+    }
+    return `<div class="titem fi2 ${t.done?'dn':''}">
       <input type="checkbox" class="tck" ${t.done?'checked':''} onchange="togTask(${i})">
       <span class="ttxt">${esc(t.text)}</span>
-      <span class="tdt">${esc(t.by||'')} · ${t.date||''}</span>
+      ${dueBadge}
+      <span class="tdt" style="font-size:.58rem">${esc(t.by||'')}</span>
       <button class="tdel" onclick="delTask(${i})">×</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 async function addTask(){
-  const inp=document.getElementById('ti'); const txt=(inp.value||'').trim(); if(!txt) return;
+  const inp=document.getElementById('ti');
+  const dateInp=document.getElementById('ti-date');
+  const txt=(inp.value||'').trim(); if(!txt) return;
+  const dueDate=dateInp?dateInp.value:null;
   const tasks=lg(CD,'tasks',[]);
-  tasks.unshift({id:Date.now(),text:txt,done:false,by:CU,date:new Date().toLocaleDateString('pt-PT')});
+  tasks.unshift({id:Date.now(),text:txt,done:false,by:CU,
+    date:new Date().toLocaleDateString('pt-PT'),
+    dueDate:dueDate||null,
+    disc:CD
+  });
   await ss(CD,'tasks',tasks);
-  renderTasks(tasks); inp.value=''; updStats(); buildSB();
+  renderTasks(tasks);
+  inp.value='';
+  if(dateInp) dateInp.value='';
+  updStatsSilent(); buildSB();
+  webhook('✅ TAREFA CRIADA', `**${CU}** criou a tarefa "**${txt}**"${dueDate?' para '+dueDate:''} em **${DISCS.find(d=>d.id===CD)?.name||CD}**`, 0x22d3ee);
   toast('Tarefa adicionada','ok');
 }
 async function togTask(i){
@@ -1529,6 +1775,7 @@ async function addFC(){
   renderCards(cards);
   document.getElementById('cfr').value=''; document.getElementById('cbk').value='';
   updStats(); buildSB();
+  webhook('🃏 FLASHCARD CRIADO', `**${CU}** criou um flashcard em **${DISCS.find(d=>d.id===CD)?.name||CD}**`, 0x22d3ee);
   toast('Flashcard criado!','ok');
 }
 async function delFC(i,e){
@@ -1630,6 +1877,162 @@ window.addEventListener('resize', ()=>{
     document.getElementById('sb-overlay').classList.remove('show');
   }
 });
+
+
+/* ══ CALENDAR ══ */
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+async function openCalendar(){
+  document.getElementById('cal-modal').classList.add('op');
+  await renderCalendar();
+}
+function closeCalendar(e){
+  if(e && e.target !== document.getElementById('cal-modal')) return;
+  document.getElementById('cal-modal').classList.remove('op');
+}
+function calNav(dir){
+  calMonth += dir;
+  if(calMonth > 11){ calMonth=0; calYear++; }
+  if(calMonth < 0){ calMonth=11; calYear--; }
+  renderCalendar();
+}
+function calGoToday(){
+  calYear = new Date().getFullYear();
+  calMonth = new Date().getMonth();
+  renderCalendar();
+}
+
+async function renderCalendar(){
+  const body = document.getElementById('cal-body');
+  const lbl  = document.getElementById('cal-month-lbl');
+  if(!body) return;
+
+  // Month label
+  const monthName = new Date(calYear, calMonth, 1)
+    .toLocaleDateString('pt-PT', {month:'long', year:'numeric'});
+  lbl.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+  // Collect ALL tasks across all disciplines
+  body.innerHTML = '<div style="color:var(--txm);font-size:.75rem;text-align:center;padding:20px">A carregar tarefas...</div>';
+  
+  const allTasks = [];
+  for(const d of DISCS){
+    const tasks = await sg(d.id, 'tasks', []);
+    ls(d.id, 'tasks', tasks);
+    tasks.forEach(t => {
+      if(t.dueDate) allTasks.push({...t, discId:d.id, discName:d.name, discIcon:d.icon});
+    });
+  }
+
+  // Build day grid
+  const today = new Date(); today.setHours(0,0,0,0);
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay  = new Date(calYear, calMonth+1, 0);
+  
+  // Start grid on Monday
+  let startDow = firstDay.getDay(); // 0=Sun
+  startDow = startDow === 0 ? 6 : startDow - 1; // convert to Mon=0
+
+  const dows = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  
+  let html = '<div class="cal-grid">';
+  // Day-of-week headers
+  dows.forEach(d => html += `<div class="cal-dow">${d}</div>`);
+
+  // Empty cells before month start
+  for(let i=0; i<startDow; i++){
+    const prevDate = new Date(calYear, calMonth, -startDow+i+1);
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${prevDate.getDate()}</div></div>`;
+  }
+
+  // Days of month
+  for(let d=1; d<=lastDay.getDate(); d++){
+    const date = new Date(calYear, calMonth, d);
+    const dateStr = date.toISOString().slice(0,10);
+    const isToday = date.getTime() === today.getTime();
+    
+    const dayTasks = allTasks.filter(t => t.dueDate === dateStr);
+    const hasTasks = dayTasks.length > 0;
+    
+    let chips = '';
+    dayTasks.slice(0,3).forEach(t => {
+      const cls = t.done?'done':date<today?'overdue':isToday?'today-chip':
+                  ((date-today)/(86400000)<=3)?'soon':'normal';
+      chips += `<div class="cal-task-chip ${cls}" title="${esc(t.text)}">${esc(t.discIcon)} ${esc(t.text)}</div>`;
+    });
+    if(dayTasks.length>3) chips += `<div class="cal-task-chip normal">+${dayTasks.length-3} mais</div>`;
+
+    html += `<div class="cal-day${isToday?' today':''}${hasTasks?' has-tasks':''}" 
+               onclick="calShowDay('${dateStr}')">
+      <div class="cal-day-num">${d}</div>
+      ${chips}
+    </div>`;
+  }
+
+  // Fill remaining cells
+  const totalCells = startDow + lastDay.getDate();
+  const remainder = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for(let i=1; i<=remainder; i++){
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
+  }
+  html += '</div>';
+
+  // ── Agenda: upcoming tasks (next 30 days) ──
+  const upcoming = allTasks
+    .filter(t => !t.done && t.dueDate >= today.toISOString().slice(0,10))
+    .sort((a,b) => a.dueDate.localeCompare(b.dueDate))
+    .slice(0, 20);
+  
+  const overdue = allTasks
+    .filter(t => !t.done && t.dueDate < today.toISOString().slice(0,10))
+    .sort((a,b) => b.dueDate.localeCompare(a.dueDate));
+
+  if(overdue.length){
+    html += `<div class="cal-sec" style="color:var(--err)">⚠ Atrasadas (${overdue.length})</div>`;
+    html += '<div class="cal-task-list">';
+    overdue.forEach(t => {
+      html += calTaskRow(t, 'overdue');
+    });
+    html += '</div>';
+  }
+
+  if(upcoming.length){
+    html += `<div class="cal-sec">📋 Próximas tarefas</div>`;
+    html += '<div class="cal-task-list">';
+    upcoming.forEach(t => {
+      html += calTaskRow(t, 'upcoming');
+    });
+    html += '</div>';
+  }
+
+  if(!upcoming.length && !overdue.length){
+    html += `<div class="empty" style="margin-top:16px"><div class="ico">🎉</div><p>Sem tarefas agendadas! Boa sorte nos estudos.</p></div>`;
+  }
+
+  body.innerHTML = html;
+}
+
+function calTaskRow(t, state){
+  const due = new Date(t.dueDate);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((due-today)/(86400000));
+  const fmt = due.toLocaleDateString('pt-PT',{weekday:'short',day:'2-digit',month:'short'});
+  let diffTxt = diff===0?'Hoje':diff===1?'Amanhã':diff<0?`${Math.abs(diff)}d atraso`:`${diff}d`;
+  let col = state==='overdue'?'var(--err)':diff===0?'var(--warn)':diff<=3?'#fb923c':'var(--ok)';
+  return `<div class="cal-titem">
+    <div class="cal-disc-badge">${t.discIcon} ${esc(t.discName)}</div>
+    <span style="flex:1;font-size:.8rem;color:var(--tx)">${esc(t.text)}</span>
+    <span style="font-size:.65rem;color:${col};font-family:'JetBrains Mono',monospace;flex-shrink:0;font-weight:700">${fmt} · ${diffTxt}</span>
+  </div>`;
+}
+
+function calShowDay(dateStr){
+  // Scroll to that date in the agenda or highlight — for now just filter view
+  const date = new Date(dateStr);
+  const fmt = date.toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long'});
+  toast('📅 ' + fmt.charAt(0).toUpperCase()+fmt.slice(1));
+}
 
 </script>
 </body>
