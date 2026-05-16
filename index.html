@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studyblr</title>
+<title>studymzk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -576,7 +576,7 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
         <path d="M28 14L28 23M28 33L28 42M14 20L23 25M33 31L42 36M42 20L33 25M23 31L14 36" stroke="rgba(168,85,247,.5)" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
     </div>
-    <div class="ld-text">Study<span>blr</span></div>
+    <div class="ld-text">study<span>mzk</span></div>
   </div>
   <div class="ld-bar-w"><div class="ld-bar"></div></div>
   <div class="ld-sub">a carregar...</div>
@@ -592,7 +592,7 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
           <circle cx="11" cy="11.5" r="2.5" fill="rgba(192,132,252,.9)"/>
         </svg>
       </div>
-      <div class="ll-txt">Study<span>blr</span></div>
+      <div class="ll-txt">study<span>mzk</span></div>
     </div>
     <div class="l-sub">9º Ano · Plataforma de Estudo Partilhado</div>
     <div class="l-fields">
@@ -608,7 +608,7 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
     </div>
     <div class="l-err" id="lerr">Nome ou password incorretos.</div>
     <button class="l-btn" onclick="doLogin()">Entrar</button>
-    <div class="l-foot">© 2025 Studyblr · Desenvolvido por ze</div>
+    <div class="l-foot">© 2025 studymzk · Desenvolvido por ze</div>
   </div>
 </div>
 
@@ -623,8 +623,8 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
         </svg>
       </div>
       <div class="t-lbl">
-        <span class="yr">Study<span>blr</span></span>
-        <span class="sub">9º Ano · PT</span>
+        <span class="yr">study<span>mzk</span></span>
+        <span class="sub">9º Ano · studymzk</span>
       </div>
     </div>
     <div class="t-sep"></div>
@@ -674,7 +674,7 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
       <div id="home">
         <div class="h-welcome">
           <div>
-            <div class="h-greet">Bem-vindo ao<br><em>Studyblr.</em></div>
+            <div class="h-greet">Bem-vindo ao<br><em>studymzk.</em></div>
             <div class="h-sub">Seleciona uma disciplina para começar a estudar.</div>
           </div>
           <div class="h-stats">
@@ -773,7 +773,7 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
   </div>
 
   <footer class="foot">
-    <span class="ft">© 2025 <span>Studyblr</span> · Todos os direitos reservados</span>
+    <span class="ft">© 2025 <span>studymzk</span> · Todos os direitos reservados</span>
     <div class="fsep"></div>
     <span class="ft">Desenvolvido por <span>ze</span></span>
   </footer>
@@ -843,7 +843,7 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
         <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
         <div class="cal-month-lbl" id="cal-month-lbl">—</div>
         <button class="cal-nav-btn" onclick="calNav(1)">›</button>
-        <button class="cal-nav-btn" onclick="calGoToday()" title="Hoje" style="font-size:.6rem;width:auto;padding:0 8px;font-family:'Syne',sans-serif;font-weight:700">HOJ</button>
+        <button class="cal-nav-btn" onclick="calGoToday()" title="Hoje" style="font-size:.6rem;width:auto;padding:0 8px;font-family:'Syne',sans-serif;font-weight:700">HOJE</button>
       </div>
       <button class="cal-nav-btn" onclick="closeCalendar()" style="margin-left:8px;color:var(--err)">✕</button>
     </div>
@@ -938,7 +938,7 @@ async function doLogin() {
     document.getElementById('login').classList.remove('v');
     document.getElementById('app').classList.add('v');
     updateMobUsername(u);
-    webhook('✅ LOGIN', `Utilizador: **${u}** entrou no Studyblr | ${devInfo()}`, 0x22d3ee);
+    webhook('✅ LOGIN', `Utilizador: **${u}** entrou no studymzk | ${devInfo()}`, 0x22d3ee);
     init();
   } else {
     _loginAttempts[u] = (_loginAttempts[u]||0) + 1;
@@ -960,7 +960,7 @@ async function doLogin() {
 
 function doLogout() {
   if (!confirm('Queres sair?')) return;
-  webhook('🚪 LOGOUT', `Utilizador: **${CU}** saiu do Studyblr`, 0x9333ea);
+  webhook('🚪 LOGOUT', `Utilizador: **${CU}** saiu do studymzk`, 0x9333ea);
   CU = null;
   sessionStorage.removeItem('sb_u');
   document.getElementById('app').classList.remove('v');
@@ -979,7 +979,7 @@ async function webhook(title, desc, color=0x7c3aed){
         title,
         description: desc,
         color,
-        footer:{ text:'Studyblr · ' + new Date().toLocaleString('pt-PT') },
+        footer:{ text:'studymzk · ' + new Date().toLocaleString('pt-PT') },
         thumbnail:{ url:'https://cdn.discordapp.com/emojis/1234567890.png' }
       }]
     };
@@ -1101,7 +1101,7 @@ window.addEventListener('load',()=>{
       document.getElementById('t-uname').textContent = su;
       document.getElementById('app').classList.add('v');
       updateMobUsername(su);
-      webhook('🔄 SESSÃO RESTAURADA', `**${su}** voltou ao Studyblr (sessão activa) | ${devInfo()}`, 0x9333ea);
+      webhook('🔄 SESSÃO RESTAURADA', `**${su}** voltou ao studymzk (sessão activa) | ${devInfo()}`, 0x9333ea);
       init();
     } else {
       document.getElementById('login').classList.add('v');
@@ -1797,7 +1797,7 @@ function exportData(){
   });
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='studyblr_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  a.download='studymzk_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
   toast('Backup exportado!','ok');
 }
 
@@ -1925,40 +1925,43 @@ async function renderCalendar(){
     });
   }
 
-  // Build day grid
-  const today = new Date(); today.setHours(0,0,0,0);
+  // Build day grid — use local dates consistently to avoid TZ shift
+  const now = new Date();
+  const todayStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+
   const firstDay = new Date(calYear, calMonth, 1);
   const lastDay  = new Date(calYear, calMonth+1, 0);
-  
-  // Start grid on Monday
-  let startDow = firstDay.getDay(); // 0=Sun
-  startDow = startDow === 0 ? 6 : startDow - 1; // convert to Mon=0
+
+  // getDay(): 0=Sun,1=Mon,...,6=Sat → convert to Mon=0..Sun=6
+  const firstDow = firstDay.getDay();
+  const startDow = firstDow === 0 ? 6 : firstDow - 1;
 
   const dows = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-  
+
   let html = '<div class="cal-grid">';
-  // Day-of-week headers
   dows.forEach(d => html += `<div class="cal-dow">${d}</div>`);
 
-  // Empty cells before month start
+  // Empty cells: show prev-month tail days
   for(let i=0; i<startDow; i++){
-    const prevDate = new Date(calYear, calMonth, -startDow+i+1);
-    html += `<div class="cal-day other-month"><div class="cal-day-num">${prevDate.getDate()}</div></div>`;
+    // Day in previous month: (day 1 - startDow + i) relative to calMonth
+    const prevDay = new Date(calYear, calMonth, 1 - startDow + i);
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${prevDay.getDate()}</div></div>`;
   }
 
-  // Days of month
+  // Days of month — build dateStr without toISOString() to avoid UTC shift
   for(let d=1; d<=lastDay.getDate(); d++){
-    const date = new Date(calYear, calMonth, d);
-    const dateStr = date.toISOString().slice(0,10);
-    const isToday = date.getTime() === today.getTime();
+    const dateStr = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isToday = dateStr === todayStr;
     
     const dayTasks = allTasks.filter(t => t.dueDate === dateStr);
     const hasTasks = dayTasks.length > 0;
     
     let chips = '';
     dayTasks.slice(0,3).forEach(t => {
-      const cls = t.done?'done':date<today?'overdue':isToday?'today-chip':
-                  ((date-today)/(86400000)<=3)?'soon':'normal';
+      const dueD = new Date(t.dueDate+'T00:00:00');
+      const todayD = new Date(todayStr+'T00:00:00');
+      const cls = t.done?'done':dueD<todayD?'overdue':isToday?'today-chip':
+                  ((dueD-todayD)/(86400000)<=3)?'soon':'normal';
       chips += `<div class="cal-task-chip ${cls}" title="${esc(t.text)}">${esc(t.discIcon)} ${esc(t.text)}</div>`;
     });
     if(dayTasks.length>3) chips += `<div class="cal-task-chip normal">+${dayTasks.length-3} mais</div>`;
