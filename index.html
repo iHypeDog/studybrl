@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <title>studymzk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -326,35 +326,77 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
 .btn,.tb-btn,.l-btn,.tool-btn,.col-btn,.bic{touch-action:manipulation}
 
 /* ── Bottom nav bar (mobile only) ── */
+/* ════════════════════════════════════════
+   MOBILE BOTTOM NAV
+════════════════════════════════════════ */
 #mob-nav{
   display:none;
-  position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:rgba(10,10,15,.97);backdrop-filter:blur(16px);
-  border-top:1px solid var(--pb);
-  height:60px;
-  flex-direction:row;align-items:stretch;
-  padding:0 4px;
-  safe-area-inset-bottom: env(safe-area-inset-bottom);
-  padding-bottom:env(safe-area-inset-bottom);
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:300;
+  background:rgba(9,9,20,.98);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(168,85,247,.2);
+  /* Safe area for iPhone home bar */
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  height:calc(56px + env(safe-area-inset-bottom,0px));
+  flex-direction:row;
+  align-items:flex-start;
+  overflow:hidden;
 }
 .mob-nav-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;background:none;border:none;color:var(--txm);cursor:pointer;
-  font-family:'Syne',sans-serif;font-size:.52rem;font-weight:600;letter-spacing:.04em;
-  text-transform:uppercase;padding:4px 2px;transition:color .2s;border-radius:var(--rs);
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;
+  height:56px;
+  background:none;border:none;
+  color:rgba(92,84,128,.8);
+  cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:0;/* hide label by default */
+  font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  transition:color .2s;
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+  padding:0 2px;
 }
-.mob-nav-btn svg{width:20px;height:20px}
+.mob-nav-btn svg{width:22px;height:22px;flex-shrink:0;stroke-width:1.8}
+.mob-nav-btn span{font-size:.5rem;line-height:1;margin-top:1px;display:block}
 .mob-nav-btn.act{color:var(--ac)}
-.mob-nav-btn.act svg{filter:drop-shadow(0 0 6px rgba(192,132,252,.5))}
+.mob-nav-btn.act::before{
+  content:'';
+  position:absolute;top:0;left:25%;right:25%;height:2px;
+  background:linear-gradient(90deg,var(--pur),var(--ac));
+  border-radius:0 0 3px 3px;
+}
 
-/* ── Sidebar overlay on mobile ── */
+/* Sidebar overlay */
 #sb-overlay{
-  display:none;position:fixed;inset:0;z-index:149;
-  background:rgba(5,5,10,.7);backdrop-filter:blur(4px);
+  display:none;position:fixed;inset:0;z-index:249;
+  background:rgba(5,5,10,.75);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  -webkit-tap-highlight-color:transparent;
 }
 #sb-overlay.show{display:block}
 
-/* ── Tablet (≤900px) ── */
+/* Mobile user pill */
+.mob-user-pill{
+  display:none;align-items:center;gap:6px;
+  padding:5px 10px;background:var(--sur);border:1px solid var(--pb);
+  border-radius:20px;font-size:.72rem;color:var(--txd);font-weight:600;
+  margin-left:auto;white-space:nowrap;
+}
+.mob-udot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex-shrink:0}
+.mob-logout{
+  background:none;border:none;color:var(--txm);cursor:pointer;
+  padding:4px 6px;display:flex;align-items:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.mob-logout svg{width:14px;height:14px}
+
+/* ════════════════════════════════════════
+   TABLET  ≤ 900px
+════════════════════════════════════════ */
 @media(max-width:900px){
   .t-lbl .sub{display:none}
   #sb-conn{display:none}
@@ -363,203 +405,208 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
   .t-user{padding:5px 9px}
 }
 
-/* ── Mobile (≤640px) ── */
+/* ════════════════════════════════════════
+   MOBILE  ≤ 640px
+════════════════════════════════════════ */
 @media(max-width:640px){
-  /* App uses flex column, bottom nav replaces sidebar */
-  #app{height:calc(100vh - 60px);height:calc(100dvh - 60px)}
+  /* ── Base ── */
+  html,body{overflow:hidden;overscroll-behavior:none}
+
+  /* Full height using dvh (dynamic viewport height - accounts for browser chrome) */
+  #app{
+    height:100dvh;
+    height:100vh; /* fallback */
+    display:flex;flex-direction:column;
+    padding-bottom:calc(56px + env(safe-area-inset-bottom,0px));
+  }
   #mob-nav{display:flex}
 
-  /* Topbar compact */
-  .topbar{height:52px;padding:0 12px;gap:8px}
-  .t-lbl .yr{font-size:.95rem}
-  .t-lbl .sub,.t-acts,.t-user,.t-clk{display:none}
-  /* Show only logo + user dot + logout on mobile topbar */
-  .mob-user-pill{
-    display:flex!important;align-items:center;gap:6px;
-    padding:4px 10px;background:var(--sur);border:1px solid var(--pb);
-    border-radius:20px;font-size:.7rem;color:var(--txd);font-weight:600;margin-left:auto;
+  /* ── Topbar ── */
+  .topbar{
+    height:52px;padding:0 14px;gap:10px;
+    flex-shrink:0;
   }
-  .mob-udot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
-  .mob-logout{
-    background:none;border:none;color:var(--txm);cursor:pointer;
-    padding:4px 8px;font-family:'Syne',sans-serif;font-size:.65rem;font-weight:700;
-    display:flex;align-items:center;gap:4px;
-  }
-  .mob-logout svg{width:12px;height:12px}
+  .t-lbl .sub,.t-acts,.t-user,.t-clk,#sb-conn{display:none!important}
+  .mob-user-pill{display:flex!important}
 
-  /* Sidebar: slide-over drawer on mobile */
+  /* ── Sidebar: full-screen drawer ── */
   .sidebar{
-    position:fixed;top:52px;left:0;bottom:60px;
-    z-index:150;transform:translateX(-100%);
-    transition:transform .3s ease;
-    width:240px!important;flex-basis:240px!important;
-    box-shadow:4px 0 24px rgba(0,0,0,.5);
+    position:fixed;
+    top:52px;left:0;
+    bottom:calc(56px + env(safe-area-inset-bottom,0px));
+    width:min(280px, 82vw)!important;
+    flex-basis:auto!important;
+    z-index:250;
+    transform:translateX(-110%);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow:6px 0 32px rgba(0,0,0,.6);
+    overflow-y:auto;
   }
   .sidebar.mob-open{transform:translateX(0)}
-  /* Hide collapse btn inside drawer on mobile */
   .sidebar .col-btn{display:none}
 
-  /* Content full width */
-  .layout{flex-direction:column}
-  .content{width:100%;min-width:0}
+  /* ── Layout ── */
+  .layout{
+    flex:1;
+    overflow:hidden;
+    min-height:0;
+    position:relative;
+  }
+  .content{
+    width:100%;min-width:0;
+    height:100%;
+    overflow:hidden;
+    display:flex;flex-direction:column;
+  }
 
-  /* Home padding */
-  #home{padding:16px 14px 10px;gap:16px}
+  /* ── Home ── */
+  #home{
+    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:16px 14px 12px;gap:14px;
+  }
+  .h-welcome{flex-direction:column;gap:12px}
   .h-greet{font-size:1.5rem}
-  .h-stats{gap:8px}
-  .sc{padding:10px 12px;min-width:72px}
+  .h-sub{font-size:.75rem}
+  .h-stats{gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
+  .h-stats::-webkit-scrollbar{display:none}
+  .sc{padding:10px 14px;min-width:80px;flex-shrink:0}
   .sv{font-size:1.3rem}
-  .dg{grid-template-columns:repeat(2,1fr);gap:8px}
+  .sl{font-size:.58rem}
+  .dg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
   .dcard{padding:13px 11px}
   .dc-icon{font-size:1.3rem}
   .dc-name{font-size:.78rem}
+  .dc-count{font-size:.64rem}
 
-  /* Discipline topbar */
-  .dt-bar{padding:10px 14px 0}
-  .d-bc{margin-bottom:8px}
-  .d-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;gap:0;padding-bottom:1px}
+  /* ── Disc screen ── */
+  #disc{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .dt-bar{padding:10px 14px 0;flex-shrink:0}
+  .d-bc{margin-bottom:8px;font-size:.65rem}
+  .d-tabs{
+    display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    gap:0;padding-bottom:0;
+    scrollbar-width:none;
+  }
   .d-tabs::-webkit-scrollbar{display:none}
-  .tab-btn{padding:7px 10px;font-size:.68rem;white-space:nowrap}
+  .tab-btn{padding:7px 11px;font-size:.67rem;white-space:nowrap;flex-shrink:0}
 
-  /* Tab panels */
-  .tab-panel{padding:12px 14px;gap:10px}
+  /* ── Tab panels — scrollable ── */
+  .d-content{flex:1;overflow:hidden}
+  .tab-panel{
+    height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:12px 14px;gap:10px;
+  }
 
-  /* Notes */
-  .n-hbar{gap:6px}
-  .nt-bar{padding:5px 8px;gap:3px}
-  .tool-btn{width:30px;height:30px}
-  .n-area{min-height:140px;padding:11px 12px;font-size:.84rem}
-  .nc-head{padding:10px 12px}
+  /* ── Notes ── */
+  .n-hbar{gap:6px;flex-wrap:wrap}
+  .n-badge{font-size:.57rem;padding:2px 8px}
+  .nt-bar{padding:5px 7px;gap:2px;flex-wrap:wrap}
+  .tool-btn{width:30px;height:30px;font-size:.75rem}
+  .n-area{min-height:130px;padding:10px 12px;font-size:.84rem}
+  .nc-head{padding:9px 12px;gap:8px}
+  .nc-title{font-size:.8rem}
 
   /* Create note modal */
-  .cnbox{margin:0 12px;padding:22px 18px}
+  .cnmod{align-items:flex-end;padding:0}
+  .cnbox{
+    width:100%;max-width:none;
+    border-radius:var(--r) var(--r) 0 0;
+    padding:22px 18px calc(18px + env(safe-area-inset-bottom,0px));
+    animation:slideUp .25s ease;
+  }
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 
-  /* Files */
+  /* ── Files ── */
   .up-zone{padding:20px 14px}
+  .up-txt{font-size:.78rem}
+  .up-sub{font-size:.64rem}
   .fh{padding:8px 10px;gap:8px}
   .fic-w{width:32px;height:32px;font-size:.9rem}
   .fname{font-size:.75rem}
-  .finfo{font-size:.58rem}
+  .finfo{font-size:.57rem}
+  .facts{gap:4px}
+  .bic{width:28px;height:28px}
 
-  /* Tasks */
-  .ti-row{flex-wrap:wrap}
-  .ti{width:100%;flex:none}
-  .ti-row .btn{width:100%}
+  /* ── Tasks ── */
+  .ti-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+  .ti-row .ti:nth-child(2){grid-column:1;grid-row:2;font-size:.8rem}
+  .ti-row .btn{grid-column:2;grid-row:1/3;height:100%;align-self:stretch}
   .titem{padding:8px 10px;gap:7px}
-  .ttxt{font-size:.76rem}
+  .ttxt{font-size:.78rem}
   .tdt{display:none}
 
-  /* Flashcards — 1 column */
+  /* ── Flashcards ── */
   .cadd{grid-template-columns:1fr;gap:8px}
-  .cadd .btn{width:100%}
+  .cadd .btn{width:100%;justify-content:center}
+  .cf input{font-size:.85rem}
   .fc-grid{grid-template-columns:repeat(2,1fr);gap:8px}
   .fc{height:130px}
+  .fc-ct{font-size:.78rem}
 
-  /* Toast */
-  .tw{bottom:72px;right:12px;left:12px;align-items:center}
-  .toast{font-size:.72rem;padding:8px 12px}
+  /* ── Toast above nav ── */
+  .tw{
+    bottom:calc(64px + env(safe-area-inset-bottom,0px));
+    right:12px;left:12px;
+    align-items:center;
+  }
+  .toast{font-size:.73rem;padding:8px 12px;text-align:center}
 
-  /* Footer hidden on mobile */
+  /* ── Footer ── */
   .foot{display:none}
-
-  /* Login */
   .lb{margin:12px;padding:28px 20px}
+
+  /* ── MD preview mobile ── */
+  .md-preview{font-size:.83rem;padding:10px 12px}
+  .n-mode-toggle .nmt-btn{padding:3px 8px;font-size:.62rem}
 }
 
-/* ── Small phones (≤380px) ── */
-@media(max-width:380px){
-  .dg{grid-template-columns:1fr 1fr}
-  .fc-grid{grid-template-columns:1fr 1fr}
-  .dc-name{font-size:.72rem}
-}
-
-
-/* ═══════════════════════════════
-   CALENDAR MODAL
-═══════════════════════════════ */
-#cal-modal{
-  position:fixed;inset:0;z-index:700;background:rgba(5,5,10,.88);
-  backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;
-  padding:16px;
-}
-#cal-modal.op{display:flex}
-.cal-box{
-  background:var(--bg2);border:1px solid var(--pb);border-radius:var(--r);
-  width:100%;max-width:860px;max-height:92vh;display:flex;flex-direction:column;
-  overflow:hidden;box-shadow:var(--sh);animation:mdi .2s ease;
-}
-.cal-head{
-  padding:14px 18px;border-bottom:1px solid var(--pb);background:var(--bg3);
-  display:flex;align-items:center;gap:12px;flex-shrink:0;
-}
-.cal-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--tx);flex:1}
-.cal-nav{display:flex;align-items:center;gap:6px}
-.cal-nav-btn{
-  width:30px;height:30px;background:var(--sur);border:1px solid var(--pb);
-  border-radius:6px;color:var(--txd);cursor:pointer;display:flex;align-items:center;
-  justify-content:center;transition:all .2s;font-size:1rem;
-}
-.cal-nav-btn:hover{color:var(--ac);border-color:rgba(168,85,247,.5)}
-.cal-month-lbl{
-  font-family:'DM Serif Display',serif;font-size:1rem;color:var(--ac);
-  min-width:130px;text-align:center;
-}
-.cal-body{flex:1;overflow-y:auto;padding:16px}
-/* Day grid */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cal-dow{
-  text-align:center;font-size:.58rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--txm);padding:4px 0 8px;
-}
-.cal-day{
-  min-height:72px;border-radius:var(--rs);border:1px solid var(--pb);
-  background:var(--sur);padding:6px;cursor:default;transition:border-color .2s;
-  display:flex;flex-direction:column;gap:3px;
-}
-.cal-day.today{border-color:rgba(168,85,247,.6);background:rgba(124,58,237,.1)}
-.cal-day.other-month{opacity:.35}
-.cal-day.has-tasks{border-color:rgba(34,211,238,.35);cursor:pointer}
-.cal-day.has-tasks:hover{border-color:rgba(34,211,238,.6);background:rgba(34,211,238,.05)}
-.cal-day-num{
-  font-size:.72rem;font-weight:700;color:var(--txd);line-height:1;
-}
-.cal-day.today .cal-day-num{color:var(--ac);font-size:.8rem}
-.cal-task-chip{
-  font-size:.58rem;line-height:1.3;padding:2px 5px;border-radius:4px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;
-}
-.cal-task-chip.done{background:rgba(92,84,128,.2);color:var(--txm);text-decoration:line-through}
-.cal-task-chip.overdue{background:rgba(244,63,94,.2);color:#f87171}
-.cal-task-chip.today-chip{background:rgba(245,158,11,.2);color:#fbbf24}
-.cal-task-chip.soon{background:rgba(251,146,60,.15);color:#fb923c}
-.cal-task-chip.normal{background:rgba(34,211,238,.12);color:var(--ok)}
-/* Task list panel (below calendar) */
-.cal-task-list{margin-top:14px;display:flex;flex-direction:column;gap:6px}
-.cal-titem{
-  background:var(--sur);border:1px solid var(--pb);border-radius:var(--rs);
-  padding:9px 12px;display:flex;align-items:center;gap:10px;
-}
-.cal-disc-badge{
-  font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:10px;
-  background:var(--pg);border:1px solid var(--pb);color:var(--ac);
-  white-space:nowrap;flex-shrink:0;
-}
-/* Agenda section title */
-.cal-sec{
-  font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--txm);margin:12px 0 6px;display:flex;align-items:center;gap:8px;
-}
-.cal-sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--pb),transparent)}
-/* Mobile calendar: smaller cells */
+/* ════════════════════════════════════════
+   CALENDAR MOBILE — bottom sheet
+════════════════════════════════════════ */
 @media(max-width:640px){
-  .cal-box{max-height:95vh;border-radius:var(--r) var(--r) 0 0;position:absolute;bottom:0;left:0;right:0;max-width:none}
+  #cal-modal{
+    padding:0;
+    align-items:flex-end;
+    /* Must be above bottom nav */
+    z-index:400;
+  }
+  .cal-box{
+    width:100%;max-width:none;
+    height:92dvh;height:92vh;
+    border-radius:20px 20px 0 0;
+    position:relative;
+    animation:slideUp .28s cubic-bezier(.4,0,.2,1);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .cal-head{padding:12px 14px}
+  .cal-title{font-size:1rem}
+  .cal-month-lbl{font-size:.85rem;min-width:100px}
+  .cal-body{padding:10px}
   .cal-grid{gap:3px}
-  .cal-day{min-height:52px;padding:4px}
-  .cal-day-num{font-size:.65rem}
+  .cal-dow{font-size:.55rem;padding:2px 0 6px}
+  .cal-day{min-height:46px;padding:4px 3px}
+  .cal-day-num{font-size:.63rem}
   .cal-task-chip{display:none}
-  .cal-day.has-tasks::after{content:'●';font-size:.5rem;color:var(--ok);display:block;text-align:center}
-  #cal-modal{padding:0;align-items:flex-end}
+  .cal-day.has-tasks::after{
+    content:'●';font-size:.45rem;
+    color:var(--ok);display:block;text-align:center;margin-top:2px;
+  }
+  .cal-titem{padding:8px 10px;gap:8px;flex-wrap:wrap}
+  .cal-disc-badge{font-size:.55rem}
+  .cal-titem span{font-size:.75rem}
 }
+
+/* ════════════════════════════════════════
+   SMALL PHONES  ≤ 380px
+════════════════════════════════════════ */
+@media(max-width:380px){
+  .dg{grid-template-columns:repeat(2,1fr)}
+  .fc-grid{grid-template-columns:repeat(2,1fr)}
+  .dc-name{font-size:.72rem}
+  .mob-nav-btn svg{width:20px;height:20px}
+  .cal-day{min-height:40px}
+}
+
 
 </style>
 </head>
@@ -785,31 +832,31 @@ input,button,select,textarea{font-size:16px!important} /* prevent iOS zoom on fo
   <nav id="mob-nav">
     <button class="mob-nav-btn" id="mn-home" onclick="mobNavHome()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Início
+      <span>Início</span>
     </button>
     <button class="mob-nav-btn" id="mn-discs" onclick="openMobSidebar()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      Disciplinas
+      <span>Disciplinas</span>
     </button>
     <button class="mob-nav-btn" id="mn-notes" onclick="mobSwitchTab('notes')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Notas
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Notas</span>
     </button>
     <button class="mob-nav-btn" id="mn-files" onclick="mobSwitchTab('files')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      Ficheiros
+      <span>Ficheiros</span>
     </button>
     <button class="mob-nav-btn" id="mn-tasks" onclick="mobSwitchTab('tasks')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      Tarefas
+      <span>Tarefas</span>
     </button>
     <button class="mob-nav-btn" id="mn-cards" onclick="mobSwitchTab('cards')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      Cards
+      <span>Cards</span>
     </button>
     <button class="mob-nav-btn" id="mn-cal" onclick="openCalendar()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Agenda
+      <span>Agenda</span>
     </button>
   </nav>
 </div>
@@ -1813,7 +1860,7 @@ function toast(msg,type=''){
 }
 
 /* ══ MOBILE HELPERS ══ */
-function isMobile(){ return window.innerWidth <= 640; }
+function isMobile(){ return window.matchMedia('(max-width:640px)').matches; }
 
 function openMobSidebar(){
   document.getElementById('sidebar').classList.add('mob-open');
@@ -1834,8 +1881,10 @@ function mobNavHome(){
 function mobSwitchTab(tab){
   closeMobSidebar();
   if(!CD){
+    // Open sidebar so user can pick a discipline
+    openMobSidebar();
     toast('Seleciona uma disciplina primeiro','');
-    openMobSidebar(); return;
+    return;
   }
   switchTab(tab, document.querySelector('[data-tab="'+tab+'"]'));
   setMobNavAct('mn-'+tab);
@@ -1870,12 +1919,23 @@ window.openDisc = function(id){
   }
 };
 
-// Handle resize: if going from mobile to desktop, reset sidebar state
+// Override openCalendar to set nav active state
+const _origOpenCalendar = openCalendar;
+window.openCalendar = function(){
+  _origOpenCalendar();
+  setMobNavAct('mn-cal');
+};
+
+// Reset sidebar on resize to desktop
+let _resizeTimer;
 window.addEventListener('resize', ()=>{
-  if(!isMobile()){
-    document.getElementById('sidebar').classList.remove('mob-open');
-    document.getElementById('sb-overlay').classList.remove('show');
-  }
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(()=>{
+    if(!isMobile()){
+      document.getElementById('sidebar').classList.remove('mob-open');
+      document.getElementById('sb-overlay').classList.remove('show');
+    }
+  }, 100);
 });
 
 
