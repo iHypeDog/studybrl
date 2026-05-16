@@ -1880,161 +1880,174 @@ window.addEventListener('resize', ()=>{
 
 
 /* ══ CALENDAR ══ */
-let calYear = new Date().getFullYear();
+
+/* ══ CALENDAR ══ */
+let calYear  = new Date().getFullYear();
 let calMonth = new Date().getMonth();
 
-async function openCalendar(){
+function openCalendar(){
   document.getElementById('cal-modal').classList.add('op');
-  await renderCalendar();
+  renderCalendar();
+  // Sync from Supabase in background after render
+  setTimeout(_calSyncBackground, 100);
 }
+
 function closeCalendar(e){
   if(e && e.target !== document.getElementById('cal-modal')) return;
   document.getElementById('cal-modal').classList.remove('op');
 }
+
 function calNav(dir){
   calMonth += dir;
-  if(calMonth > 11){ calMonth=0; calYear++; }
-  if(calMonth < 0){ calMonth=11; calYear--; }
+  if(calMonth > 11){ calMonth = 0; calYear++; }
+  if(calMonth < 0) { calMonth = 11; calYear--; }
   renderCalendar();
 }
+
 function calGoToday(){
-  calYear = new Date().getFullYear();
+  calYear  = new Date().getFullYear();
   calMonth = new Date().getMonth();
   renderCalendar();
 }
 
-async function renderCalendar(){
+// Sync tasks from Supabase silently, re-render if data changed
+async function _calSyncBackground(){
+  if(!SB) return;
+  let changed = false;
+  for(const d of DISCS){
+    try{
+      const remote = await sg(d.id, 'tasks', []);
+      if(JSON.stringify(remote) !== JSON.stringify(lg(d.id,'tasks',[]))){
+        ls(d.id, 'tasks', remote);
+        changed = true;
+      }
+    }catch(e){}
+  }
+  if(changed && document.getElementById('cal-modal').classList.contains('op')){
+    renderCalendar();
+  }
+}
+
+// todayStr helper — local date, no UTC shift
+function _todayStr(){
+  const n = new Date();
+  return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+}
+
+function renderCalendar(){
   const body = document.getElementById('cal-body');
   const lbl  = document.getElementById('cal-month-lbl');
-  if(!body) return;
+  if(!body || !lbl) return;
 
-  // Month label
-  const monthName = new Date(calYear, calMonth, 1)
+  // ── Month label ──
+  const mn = new Date(calYear, calMonth, 1)
     .toLocaleDateString('pt-PT', {month:'long', year:'numeric'});
-  lbl.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+  lbl.textContent = mn.charAt(0).toUpperCase() + mn.slice(1);
 
-  // Collect ALL tasks across all disciplines
-  body.innerHTML = '<div style="color:var(--txm);font-size:.75rem;text-align:center;padding:20px">A carregar tarefas...</div>';
-  
+  // ── Gather tasks from local cache (instant) ──
+  const todayStr = _todayStr();
   const allTasks = [];
   for(const d of DISCS){
-    const tasks = await sg(d.id, 'tasks', []);
-    ls(d.id, 'tasks', tasks);
-    tasks.forEach(t => {
-      if(t.dueDate) allTasks.push({...t, discId:d.id, discName:d.name, discIcon:d.icon});
-    });
+    const tasks = lg(d.id, 'tasks', []);
+    for(const t of tasks){
+      if(t.dueDate) allTasks.push({...t, discName:d.name, discIcon:d.icon});
+    }
   }
 
-  // Build day grid — use local dates consistently to avoid TZ shift
-  const now = new Date();
-  const todayStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-
+  // ── Build grid ──
   const firstDay = new Date(calYear, calMonth, 1);
   const lastDay  = new Date(calYear, calMonth+1, 0);
+  const firstDow = firstDay.getDay(); // 0=Sun
+  const startDow = firstDow === 0 ? 6 : firstDow - 1; // Mon=0
 
-  // getDay(): 0=Sun,1=Mon,...,6=Sat → convert to Mon=0..Sun=6
-  const firstDow = firstDay.getDay();
-  const startDow = firstDow === 0 ? 6 : firstDow - 1;
-
-  const dows = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-
+  const DOWS = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
   let html = '<div class="cal-grid">';
-  dows.forEach(d => html += `<div class="cal-dow">${d}</div>`);
 
-  // Empty cells: show prev-month tail days
-  for(let i=0; i<startDow; i++){
-    // Day in previous month: (day 1 - startDow + i) relative to calMonth
-    const prevDay = new Date(calYear, calMonth, 1 - startDow + i);
-    html += `<div class="cal-day other-month"><div class="cal-day-num">${prevDay.getDate()}</div></div>`;
+  // Headers
+  for(const dow of DOWS) html += `<div class="cal-dow">${dow}</div>`;
+
+  // Prev-month filler
+  for(let i = 0; i < startDow; i++){
+    const pd = new Date(calYear, calMonth, 1 - startDow + i);
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${pd.getDate()}</div></div>`;
   }
 
-  // Days of month — build dateStr without toISOString() to avoid UTC shift
-  for(let d=1; d<=lastDay.getDate(); d++){
-    const dateStr = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    const isToday = dateStr === todayStr;
-    
-    const dayTasks = allTasks.filter(t => t.dueDate === dateStr);
-    const hasTasks = dayTasks.length > 0;
-    
+  // Current month days
+  for(let d = 1; d <= lastDay.getDate(); d++){
+    const ds  = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isTd = ds === todayStr;
+    const dayT = allTasks.filter(t => t.dueDate === ds);
+
     let chips = '';
-    dayTasks.slice(0,3).forEach(t => {
-      const dueD = new Date(t.dueDate+'T00:00:00');
-      const todayD = new Date(todayStr+'T00:00:00');
-      const cls = t.done?'done':dueD<todayD?'overdue':isToday?'today-chip':
-                  ((dueD-todayD)/(86400000)<=3)?'soon':'normal';
+    for(const t of dayT.slice(0,3)){
+      const cls = t.done ? 'done'
+                : ds < todayStr ? 'overdue'
+                : isTd ? 'today-chip'
+                : daysBetween(todayStr, ds) <= 3 ? 'soon'
+                : 'normal';
       chips += `<div class="cal-task-chip ${cls}" title="${esc(t.text)}">${esc(t.discIcon)} ${esc(t.text)}</div>`;
-    });
-    if(dayTasks.length>3) chips += `<div class="cal-task-chip normal">+${dayTasks.length-3} mais</div>`;
+    }
+    if(dayT.length > 3) chips += `<div class="cal-task-chip normal">+${dayT.length-3} mais</div>`;
 
-    html += `<div class="cal-day${isToday?' today':''}${hasTasks?' has-tasks':''}" 
-               onclick="calShowDay('${dateStr}')">
-      <div class="cal-day-num">${d}</div>
-      ${chips}
-    </div>`;
+    html += `<div class="cal-day${isTd?' today':''}${dayT.length?' has-tasks':''}" onclick="calShowDay('${ds}')">
+      <div class="cal-day-num">${d}</div>${chips}</div>`;
   }
 
-  // Fill remaining cells
-  const totalCells = startDow + lastDay.getDate();
-  const remainder = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-  for(let i=1; i<=remainder; i++){
+  // Next-month filler
+  const filled = startDow + lastDay.getDate();
+  const tail   = filled % 7 === 0 ? 0 : 7 - (filled % 7);
+  for(let i = 1; i <= tail; i++){
     html += `<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
   }
   html += '</div>';
 
-  // ── Agenda: upcoming tasks (next 30 days) ──
-  const upcoming = allTasks
-    .filter(t => !t.done && t.dueDate >= today.toISOString().slice(0,10))
-    .sort((a,b) => a.dueDate.localeCompare(b.dueDate))
-    .slice(0, 20);
-  
-  const overdue = allTasks
-    .filter(t => !t.done && t.dueDate < today.toISOString().slice(0,10))
-    .sort((a,b) => b.dueDate.localeCompare(a.dueDate));
+  // ── Agenda ──
+  const overdue  = allTasks.filter(t => !t.done && t.dueDate < todayStr)
+                            .sort((a,b) => b.dueDate.localeCompare(a.dueDate));
+  const upcoming = allTasks.filter(t => !t.done && t.dueDate >= todayStr)
+                            .sort((a,b) => a.dueDate.localeCompare(b.dueDate))
+                            .slice(0,30);
 
   if(overdue.length){
-    html += `<div class="cal-sec" style="color:var(--err)">⚠ Atrasadas (${overdue.length})</div>`;
-    html += '<div class="cal-task-list">';
-    overdue.forEach(t => {
-      html += calTaskRow(t, 'overdue');
-    });
+    html += `<div class="cal-sec" style="color:var(--err)">⚠ Atrasadas (${overdue.length})</div><div class="cal-task-list">`;
+    for(const t of overdue) html += calTaskRow(t, todayStr);
     html += '</div>';
   }
 
   if(upcoming.length){
-    html += `<div class="cal-sec">📋 Próximas tarefas</div>`;
-    html += '<div class="cal-task-list">';
-    upcoming.forEach(t => {
-      html += calTaskRow(t, 'upcoming');
-    });
+    html += `<div class="cal-sec">📋 Próximas tarefas</div><div class="cal-task-list">`;
+    for(const t of upcoming) html += calTaskRow(t, todayStr);
     html += '</div>';
   }
 
-  if(!upcoming.length && !overdue.length){
-    html += `<div class="empty" style="margin-top:16px"><div class="ico">🎉</div><p>Sem tarefas agendadas! Boa sorte nos estudos.</p></div>`;
+  if(!overdue.length && !upcoming.length){
+    html += `<div class="empty" style="margin-top:16px"><div class="ico">🎉</div><p>Sem tarefas agendadas!</p></div>`;
   }
 
   body.innerHTML = html;
 }
 
-function calTaskRow(t, state){
-  const due = new Date(t.dueDate);
-  const today = new Date(); today.setHours(0,0,0,0);
-  const diff = Math.round((due-today)/(86400000));
-  const fmt = due.toLocaleDateString('pt-PT',{weekday:'short',day:'2-digit',month:'short'});
-  let diffTxt = diff===0?'Hoje':diff===1?'Amanhã':diff<0?`${Math.abs(diff)}d atraso`:`${diff}d`;
-  let col = state==='overdue'?'var(--err)':diff===0?'var(--warn)':diff<=3?'#fb923c':'var(--ok)';
+function daysBetween(fromStr, toStr){
+  return Math.round((new Date(toStr+'T00:00:00') - new Date(fromStr+'T00:00:00')) / 86400000);
+}
+
+function calTaskRow(t, todayStr){
+  const diff = daysBetween(todayStr, t.dueDate);
+  const due  = new Date(t.dueDate+'T00:00:00');
+  const fmt  = due.toLocaleDateString('pt-PT',{weekday:'short',day:'2-digit',month:'short'});
+  const diffTxt = diff===0?'Hoje':diff===1?'Amanhã':diff<0?`${Math.abs(diff)}d atraso`:`${diff}d`;
+  const col = diff<0?'var(--err)':diff===0?'var(--warn)':diff<=3?'#fb923c':'var(--ok)';
   return `<div class="cal-titem">
-    <div class="cal-disc-badge">${t.discIcon} ${esc(t.discName)}</div>
-    <span style="flex:1;font-size:.8rem;color:var(--tx)">${esc(t.text)}</span>
-    <span style="font-size:.65rem;color:${col};font-family:'JetBrains Mono',monospace;flex-shrink:0;font-weight:700">${fmt} · ${diffTxt}</span>
+    <div class="cal-disc-badge">${esc(t.discIcon)} ${esc(t.discName)}</div>
+    <span style="flex:1;font-size:.8rem;color:var(--tx);padding:0 8px">${esc(t.text)}</span>
+    <span style="font-size:.63rem;color:${col};font-family:'JetBrains Mono',monospace;flex-shrink:0;font-weight:700">${fmt} · ${diffTxt}</span>
   </div>`;
 }
 
-function calShowDay(dateStr){
-  // Scroll to that date in the agenda or highlight — for now just filter view
-  const date = new Date(dateStr);
-  const fmt = date.toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long'});
-  toast('📅 ' + fmt.charAt(0).toUpperCase()+fmt.slice(1));
+function calShowDay(ds){
+  const d   = new Date(ds+'T00:00:00');
+  const fmt = d.toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long'});
+  toast('📅 '+fmt.charAt(0).toUpperCase()+fmt.slice(1));
 }
 
 </script>
